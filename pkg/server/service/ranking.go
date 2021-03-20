@@ -26,8 +26,6 @@ type RankingService struct {
 	UserRepository model.UserRepositoryInterface
 }
 
-var _ RankingServiceInterface = (*RankingService)(nil)
-
 func NewRankingService(userRepository model.UserRepositoryInterface) *RankingService {
 	return &RankingService{
 		UserRepository: userRepository,

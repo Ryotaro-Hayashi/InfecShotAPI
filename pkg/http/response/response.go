@@ -34,6 +34,11 @@ func (hr *HttpResponse) Success(writer http.ResponseWriter, request *http.Reques
 		hr.Failed(writer, request, derror.InternalServerError.Wrap(err))
 		return
 	}
+	if data != nil {
+		writer.WriteHeader(http.StatusOK)
+	} else {
+		writer.WriteHeader(http.StatusNoContent)
+	}
 	writer.Write(data)
 	logging.AccessLogging(request, err)
 }
@@ -42,26 +47,11 @@ func (hr *HttpResponse) Success(writer http.ResponseWriter, request *http.Reques
 func (hr *HttpResponse) Failed(writer http.ResponseWriter, request *http.Request, err error) {
 	var appErr derror.ApplicationError
 	if errors.As(err, &appErr) {
-		switch appErr.Code {
-		case http.StatusBadRequest:
-			hr.badRequest(writer, appErr.Msg)
-		case http.StatusInternalServerError:
-			hr.internalServerError(writer, appErr.Msg)
-		}
+		HttpError(writer, appErr.Code, appErr.Msg)
 	} else {
-		hr.internalServerError(writer, "Unknown Internal Server Error")
+		HttpError(writer, http.StatusInternalServerError, "Unknown Internal Server Error")
 	}
 	logging.AccessLogging(request, err)
-}
-
-// BadRequest HTTPコード:400 BadRequestを処理する
-func (hr *HttpResponse) badRequest(writer http.ResponseWriter, message string) {
-	HttpError(writer, http.StatusBadRequest, message)
-}
-
-// InternalServerError HTTPコード:500 InternalServerErrorを処理する
-func (hr *HttpResponse) internalServerError(writer http.ResponseWriter, message string) {
-	HttpError(writer, http.StatusInternalServerError, message)
 }
 
 // httpError エラー用のレスポンス出力を行う

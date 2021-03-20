@@ -49,7 +49,7 @@ func (m *authMiddleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFun
 		if user == nil {
 			// TODO:アプリケーションログ
 			//log.Println(errors.New("user not found"))
-			m.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("failed to find user")))
+			m.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("empty set user")))
 			return
 		}
 
