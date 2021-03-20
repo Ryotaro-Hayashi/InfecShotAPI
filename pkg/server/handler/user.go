@@ -1,11 +1,12 @@
 package handler
 
 import (
-	"2103_proto_f_server/pkg/dcontext"
-	"2103_proto_f_server/pkg/http/response"
-	"2103_proto_f_server/pkg/server/service"
+	"InfecShotAPI/pkg/dcontext"
+	"InfecShotAPI/pkg/derror"
+	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/server/service"
 	"encoding/json"
-	"log"
+	"errors"
 	"net/http"
 )
 
@@ -40,21 +41,25 @@ func (h *UserHandler) HandleUserCreate(writer http.ResponseWriter, request *http
 	// リクエストBodyから作成後情報を取得
 	var requestBody userCreateRequest
 	if err := json.NewDecoder(request.Body).Decode(&requestBody); err != nil {
-		log.Println(err)
-		h.HttpResponse.BadRequest(writer, "Bad Request")
+		// TODO:アプリケーションログ
+		//log.Println(err)
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(err))
 		return
 	}
 
 	// ユーザ情報作成のロジック
 	res, err := h.UserService.CreateUser(&service.CreateUserRequest{Name: requestBody.Name})
 	if err != nil {
-		log.Println(err)
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		// TODO:アプリケーションログ
+		//s := fmt.Sprintf("%+v", derror.StackError(err))
+		//log.Println(s)
+		//log.Printf("%+v", derror.StackError(err))
+		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
 
 	// 生成した認証トークンを返却
-	h.HttpResponse.Success(writer, &userCreateResponse{Token: res.Token})
+	h.HttpResponse.Success(writer, request, &userCreateResponse{Token: res.Token})
 }
 
 // HandleUserGet ユーザ情報取得処理
@@ -63,21 +68,23 @@ func (h *UserHandler) HandleUserGet(writer http.ResponseWriter, request *http.Re
 	ctx := request.Context()
 	userID := dcontext.GetUserIDFromContext(ctx)
 	if userID == "" {
-		log.Println("userID from context is empty")
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		// TODO:アプリケーションログ
+		//log.Println("userID from context is empty")
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("failed to find user")))
 		return
 	}
 
 	// ユーザ情報取得のロジック
 	res, err := h.UserService.GetUser(&service.GetUserRequest{ID: userID})
 	if err != nil {
-		log.Println(err)
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		// TODO:アプリケーションログ
+		//log.Println(err)
+		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
 
 	// レスポンスに必要な情報を詰めて返却
-	h.HttpResponse.Success(writer, &userGetResponse{
+	h.HttpResponse.Success(writer, request, &userGetResponse{
 		ID:        res.ID,
 		Name:      res.Name,
 		HighScore: res.HighScore,

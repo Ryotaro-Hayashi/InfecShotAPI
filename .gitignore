@@ -1,2 +1,4 @@
 .idea/*
 nohup.out
+
+pkg/logging/log/

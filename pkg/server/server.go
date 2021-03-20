@@ -1,13 +1,12 @@
 package server
 
 import (
-	"2103_proto_f_server/pkg/db"
-	"2103_proto_f_server/pkg/http/middleware"
-	"2103_proto_f_server/pkg/http/response"
-	"2103_proto_f_server/pkg/server/handler"
-	"2103_proto_f_server/pkg/server/model"
-	"2103_proto_f_server/pkg/server/service"
-	"fmt"
+	"InfecShotAPI/pkg/db"
+	"InfecShotAPI/pkg/http/middleware"
+	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/server/handler"
+	"InfecShotAPI/pkg/server/model"
+	"InfecShotAPI/pkg/server/service"
 	"log"
 	"net/http"
 )
@@ -15,8 +14,9 @@ import (
 var (
 	httpResponse = response.NewHttpResponse()
 
-	userRepository = model.NewUserRepository(db.Conn)
-	authMiddleware = middleware.NewMiddleware(httpResponse, userRepository)
+	accessMiddleware = middleware.NewAccessMiddleware(httpResponse)
+	userRepository   = model.NewUserRepository(db.Conn)
+	authMiddleware   = middleware.NewAuthMiddleware(httpResponse, userRepository)
 
 	userService    = service.NewUserService(userRepository)
 	gameService    = service.NewGameService(userRepository)
@@ -29,14 +29,10 @@ var (
 
 // Serve HTTPサーバを起動する
 func Serve(addr string) {
-	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello World")
-	})
-
-	http.HandleFunc("/user/create", post(userHandler.HandleUserCreate))
-	http.HandleFunc("/user/get", get(authMiddleware.Authenticate(userHandler.HandleUserGet)))
-	http.HandleFunc("/game/finish", post(authMiddleware.Authenticate(gameHandler.HandleGameFinish)))
-	http.HandleFunc("/ranking/list", get(rankingHandler.HandleRankingList))
+	http.HandleFunc("/user/create", accessMiddleware.Access(post(userHandler.HandleUserCreate)))
+	http.HandleFunc("/user/get", accessMiddleware.Access(get(authMiddleware.Authenticate(userHandler.HandleUserGet))))
+	http.HandleFunc("/game/finish", accessMiddleware.Access(post(authMiddleware.Authenticate(gameHandler.HandleGameFinish))))
+	http.HandleFunc("/ranking/list", accessMiddleware.Access(get(rankingHandler.HandleRankingList)))
 
 	/* ===== サーバの起動 ===== */
 	log.Println("Server running...")
@@ -70,8 +66,7 @@ func httpMethod(apiFunc http.HandlerFunc, method string) http.HandlerFunc {
 		}
 		// 指定のHTTPメソッドでない場合はエラー
 		if request.Method != method {
-			writer.WriteHeader(http.StatusMethodNotAllowed)
-			writer.Write([]byte("Method Not Allowed"))
+			response.HttpError(writer, http.StatusMethodNotAllowed, "Method Not Allowed")
 			return
 		}
 
