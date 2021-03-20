@@ -1,0 +1,167 @@
+openapi: 3.0.2
+info:
+  title: プロトスプリントリーグ チームF
+  description: |-
+    <p>プロトスプリントリーグ チームF API仕様</p><br>
+    <p>本番環境のBaseURLは<b>http://35.72.146.193:8080/</b></p>
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+  - url: http://35.72.146.193:8080/
+tags:
+  - name: user
+    description: ユーザ関連APIs
+  - name: game
+    description: インゲーム関連API
+  - name: ranking
+    description: ランキング関連API
+paths:
+  /user/create:
+    post:
+      tags:
+        - user
+      summary: ユーザ情報作成API
+      description: |
+        ユーザ情報を作成します。<br>
+        リクエストボディからユーザの名前情報を受け取り、ユーザIDと認証用のトークンを生成しデータベースへ保存します。<br>
+        レスポンスで返ってくるトークンは他のAPIコール時にリクエストのHeaderに設定をします。
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+        required: true
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreateResponse'
+  /user/get:
+    get:
+      tags:
+        - user
+      summary: ユーザ情報取得API
+      description: |
+        ユーザ情報を取得します。<br>
+        リクエストヘッダの`x-token`を読み取ってデータベースに照会をします。
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserGetResponse'
+  /game/finish:
+    post:
+      tags:
+        - game
+      summary: インゲーム終了API
+      description: |
+        リクエストボディからスコアを取得して、ランキングへのスコアの登録を行います。<br>
+        リクエストヘッダの`x-token`を読み取ってデータベースに照会をします。
+      parameters:
+        - name: x-token
+          in: header
+          description: 認証トークン
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameFinishRequest'
+        required: true
+      responses:
+        200:
+          description: A successful response.
+          content: {}
+  /ranking/list:
+    get:
+      tags:
+        - ranking
+      summary: ランキング情報取得API
+      description: |
+        指定した順位から一定数の順位までのランキング情報を取得します。<br>
+        例えば「サーバ側での1回あたりのランキング取得件数設定」が10で、「rankパラメータ」の指定が1だった場合は1位〜10位を、「rankパラメータ」の指定が5だった場合は5位〜14位を返却します。<br>
+        クエリパラメータから`start`を読み取ってデータベースに照会をします。
+      parameters:
+        - name: start
+          in: query
+          description: 開始順位
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RankingListResponse'
+components:
+  schemas:
+    UserCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: ユーザ名
+    UserCreateResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: クライアント側で保存するトークン
+    UserGetResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ユーザID
+        name:
+          type: string
+          description: ユーザ名
+        highScore:
+          type: integer
+          description: ハイスコア
+    GameFinishRequest:
+      type: object
+      properties:
+        score:
+          type: integer
+          description: スコア
+    RankingListResponse:
+      type: object
+      properties:
+        ranks:
+          type: array
+          items:
+            $ref: '#/components/schemas/RankInfo'
+          description: 各順位情報
+    RankInfo:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: ユーザID
+        userName:
+          type: string
+          description: ユーザ名
+        rank:
+          type: integer
+          description: 順位
+        score:
+          type: integer
+          description: スコア
