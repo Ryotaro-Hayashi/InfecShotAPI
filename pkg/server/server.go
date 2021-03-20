@@ -34,8 +34,8 @@ func Serve(addr string) {
 	})
 
 	http.HandleFunc("/user/create", post(middleware.AccessLogging(userHandler.HandleUserCreate)))
-	http.HandleFunc("/user/get", get(authMiddleware.Authenticate(middleware.AccessLogging(userHandler.HandleUserGet))))
-	http.HandleFunc("/game/finish", post(authMiddleware.Authenticate(middleware.AccessLogging(gameHandler.HandleGameFinish))))
+	http.HandleFunc("/user/get", get(middleware.AccessLogging(authMiddleware.Authenticate(userHandler.HandleUserGet))))
+	http.HandleFunc("/game/finish", post(middleware.AccessLogging(authMiddleware.Authenticate(gameHandler.HandleGameFinish))))
 	http.HandleFunc("/ranking/list", get(middleware.AccessLogging(rankingHandler.HandleRankingList)))
 
 	/* ===== サーバの起動 ===== */

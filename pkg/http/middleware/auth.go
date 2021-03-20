@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"2103_proto_f_server/pkg/dcontext"
-	"2103_proto_f_server/pkg/http/response"
-	"2103_proto_f_server/pkg/server/model"
+	"InfecShotAPI/pkg/dcontext"
+	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/server/model"
 	"context"
 	"errors"
 	"log"
