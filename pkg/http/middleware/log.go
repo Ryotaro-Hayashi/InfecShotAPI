@@ -4,6 +4,7 @@ import (
 	"InfecShotAPI/pkg/dcontext"
 	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/logging"
 	"context"
 	"net/http"
 
@@ -29,8 +30,7 @@ func (m *accessMiddleware) Access(nextFunc http.HandlerFunc) http.HandlerFunc {
 
 		requestID, err := uuid.NewRandom()
 		if err != nil {
-			err = derror.InternalServerError.Wrap(err)
-			// TODO:アプリケーションログの出力
+			logging.ApplicationErrorLogging(request, derror.InternalServerError.Wrap(err))
 		}
 		if requestID != uuid.Nil {
 			ctx = dcontext.SetRequestID(ctx, requestID.String())
