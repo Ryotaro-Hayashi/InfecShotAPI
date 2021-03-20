@@ -25,20 +25,16 @@ func NewHttpResponse() *HttpResponse {
 // Success HTTPコード:200 正常終了を処理する
 func (hr *HttpResponse) Success(writer http.ResponseWriter, request *http.Request, response interface{}) {
 	if response == nil {
+		writer.WriteHeader(http.StatusNoContent)
+		logging.AccessLogging(request, nil)
 		return
 	}
 	data, err := json.Marshal(response)
 	if err != nil {
-		// TODO:アプリケーションログ
-		//log.Println(err)
 		hr.Failed(writer, request, derror.InternalServerError.Wrap(err))
 		return
 	}
-	if data != nil {
-		writer.WriteHeader(http.StatusOK)
-	} else {
-		writer.WriteHeader(http.StatusNoContent)
-	}
+	writer.WriteHeader(http.StatusOK)
 	writer.Write(data)
 	logging.AccessLogging(request, err)
 }
@@ -51,6 +47,7 @@ func (hr *HttpResponse) Failed(writer http.ResponseWriter, request *http.Request
 	} else {
 		HttpError(writer, http.StatusInternalServerError, "Unknown Internal Server Error")
 	}
+	logging.ApplicationErrorLogging(request, err)
 	logging.AccessLogging(request, err)
 }
 
