@@ -4,10 +4,13 @@ import (
 	"InfecShotAPI/pkg/dcontext"
 	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/logging"
 	"InfecShotAPI/pkg/server/model"
 	"context"
 	"errors"
 	"net/http"
+
+	"go.uber.org/zap"
 )
 
 type authMiddleware struct {
@@ -34,27 +37,23 @@ func (m *authMiddleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFun
 		// リクエストヘッダからx-token(認証トークン)を取得
 		token := request.Header.Get("x-token")
 		if token == "" {
-			// TODO:アプリケーションログ
 			m.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("failed to get token")))
 			return
 		}
 
 		user, err := m.UserRepository.SelectUserByAuthToken(token)
 		if err != nil {
-			// TODO:アプリケーションログ
-			//log.Println(err)
 			m.HttpResponse.Failed(writer, request, derror.StackError(err))
 			return
 		}
 		if user == nil {
-			// TODO:アプリケーションログ
-			//log.Println(errors.New("user not found"))
 			m.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("empty set user")))
 			return
 		}
 
 		// ユーザIDをContextへ保存して以降の処理に利用する
 		ctx = dcontext.SetUserID(ctx, user.ID)
+		logging.ApplicationLogger.Debug("succeed in authentication", zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())))
 
 		// 次の処理
 		nextFunc(writer, request.WithContext(ctx))

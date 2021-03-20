@@ -47,5 +47,5 @@ func (s *GameService) FinishGame(serviceRequest *FinishGameRequest) error {
 		}
 	}
 
-	return err
+	return nil
 }

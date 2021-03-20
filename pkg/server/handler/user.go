@@ -4,10 +4,13 @@ import (
 	"InfecShotAPI/pkg/dcontext"
 	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/logging"
 	"InfecShotAPI/pkg/server/service"
 	"encoding/json"
 	"errors"
 	"net/http"
+
+	"go.uber.org/zap"
 )
 
 type UserHandler struct {
@@ -38,50 +41,51 @@ type userGetResponse struct {
 
 // HandleUserCreate ユーザ情報作成処理
 func (h *UserHandler) HandleUserCreate(writer http.ResponseWriter, request *http.Request) {
+	requestID := dcontext.GetRequestIDFromContext(request.Context())
+	logging.ApplicationLogger.Info("start creating user", zap.String("requestID", requestID))
+
 	// リクエストBodyから作成後情報を取得
 	var requestBody userCreateRequest
 	if err := json.NewDecoder(request.Body).Decode(&requestBody); err != nil {
-		// TODO:アプリケーションログ
-		//log.Println(err)
 		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(err))
 		return
 	}
+	logging.ApplicationLogger.Info("succeed in decoding request body", zap.String("requestID", requestID), zap.Any("requestBody", requestBody))
 
 	// ユーザ情報作成のロジック
 	res, err := h.UserService.CreateUser(&service.CreateUserRequest{Name: requestBody.Name})
 	if err != nil {
-		// TODO:アプリケーションログ
-		//s := fmt.Sprintf("%+v", derror.StackError(err))
-		//log.Println(s)
-		//log.Printf("%+v", derror.StackError(err))
 		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
+	logging.ApplicationLogger.Debug("succeed in creating user", zap.String("requestID", requestID))
 
 	// 生成した認証トークンを返却
 	h.HttpResponse.Success(writer, request, &userCreateResponse{Token: res.Token})
+	logging.ApplicationLogger.Info("finished creating user", zap.String("requestID", requestID))
 }
 
 // HandleUserGet ユーザ情報取得処理
 func (h *UserHandler) HandleUserGet(writer http.ResponseWriter, request *http.Request) {
+	requestID := dcontext.GetRequestIDFromContext(request.Context())
+	logging.ApplicationLogger.Info("start getting user", zap.String("requestID", requestID))
+
 	// Contextから認証済みのユーザIDを取得
 	ctx := request.Context()
 	userID := dcontext.GetUserIDFromContext(ctx)
 	if userID == "" {
-		// TODO:アプリケーションログ
-		//log.Println("userID from context is empty")
 		h.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("userID from context is empty")))
 		return
 	}
+	logging.ApplicationLogger.Info("succeed in getting userID from context", zap.String("requestID", requestID), zap.String("userID", userID))
 
 	// ユーザ情報取得のロジック
 	res, err := h.UserService.GetUser(&service.GetUserRequest{ID: userID})
 	if err != nil {
-		// TODO:アプリケーションログ
-		//log.Println(err)
 		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
+	logging.ApplicationLogger.Debug("succeed in getting user", zap.String("requestID", requestID))
 
 	// レスポンスに必要な情報を詰めて返却
 	h.HttpResponse.Success(writer, request, &userGetResponse{
@@ -89,4 +93,5 @@ func (h *UserHandler) HandleUserGet(writer http.ResponseWriter, request *http.Re
 		Name:      res.Name,
 		HighScore: res.HighScore,
 	})
+	logging.ApplicationLogger.Info("finished getting user", zap.String("requestID", requestID))
 }
