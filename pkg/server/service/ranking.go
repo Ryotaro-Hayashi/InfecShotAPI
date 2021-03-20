@@ -1,6 +1,6 @@
 package service
 
-import "2103_proto_f_server/pkg/server/model"
+import "InfecShotAPI/pkg/server/model"
 
 type GetRankInfoListRequest struct {
 	Limit  int

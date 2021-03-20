@@ -1,12 +1,12 @@
 package server
 
 import (
-	"2103_proto_f_server/pkg/db"
-	"2103_proto_f_server/pkg/http/middleware"
-	"2103_proto_f_server/pkg/http/response"
-	"2103_proto_f_server/pkg/server/handler"
-	"2103_proto_f_server/pkg/server/model"
-	"2103_proto_f_server/pkg/server/service"
+	"InfecShotAPI/pkg/db"
+	"InfecShotAPI/pkg/http/middleware"
+	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/server/handler"
+	"InfecShotAPI/pkg/server/model"
+	"InfecShotAPI/pkg/server/service"
 	"fmt"
 	"log"
 	"net/http"
@@ -33,10 +33,10 @@ func Serve(addr string) {
 		fmt.Fprintf(w, "Hello World")
 	})
 
-	http.HandleFunc("/user/create", post(userHandler.HandleUserCreate))
-	http.HandleFunc("/user/get", get(authMiddleware.Authenticate(userHandler.HandleUserGet)))
-	http.HandleFunc("/game/finish", post(authMiddleware.Authenticate(gameHandler.HandleGameFinish)))
-	http.HandleFunc("/ranking/list", get(rankingHandler.HandleRankingList))
+	http.HandleFunc("/user/create", post(middleware.AccessLogging(userHandler.HandleUserCreate)))
+	http.HandleFunc("/user/get", get(authMiddleware.Authenticate(middleware.AccessLogging(userHandler.HandleUserGet))))
+	http.HandleFunc("/game/finish", post(authMiddleware.Authenticate(middleware.AccessLogging(gameHandler.HandleGameFinish))))
+	http.HandleFunc("/ranking/list", get(middleware.AccessLogging(rankingHandler.HandleRankingList)))
 
 	/* ===== サーバの起動 ===== */
 	log.Println("Server running...")

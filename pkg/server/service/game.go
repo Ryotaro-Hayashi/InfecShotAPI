@@ -1,7 +1,7 @@
 package service
 
 import (
-	"2103_proto_f_server/pkg/server/model"
+	"InfecShotAPI/pkg/server/model"
 	"errors"
 	"fmt"
 )

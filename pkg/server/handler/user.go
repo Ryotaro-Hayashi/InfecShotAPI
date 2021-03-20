@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"2103_proto_f_server/pkg/dcontext"
-	"2103_proto_f_server/pkg/http/response"
-	"2103_proto_f_server/pkg/server/service"
+	"InfecShotAPI/pkg/dcontext"
+	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/server/service"
 	"encoding/json"
 	"log"
 	"net/http"
