@@ -38,11 +38,11 @@ var _ UserRepositoryInterface = (*UserRepository)(nil)
 func (r *UserRepository) InsertUser(record *User) error {
 	stmt, err := r.Conn.Prepare("INSERT INTO user(id, auth_token, name, high_score) VALUES(?, ?, ?, ?)")
 	if err != nil {
-		return derror.DatabaseOperationError.Wrap(err)
+		return derror.InternalServerError.Wrap(err)
 	}
 	_, err = stmt.Exec(record.ID, record.AuthToken, record.Name, record.HighScore)
 	if err != nil {
-		return derror.DatabaseOperationError.Wrap(err)
+		return derror.InternalServerError.Wrap(err)
 	}
 	return nil
 }
@@ -51,11 +51,11 @@ func (r *UserRepository) InsertUser(record *User) error {
 func (r *UserRepository) UpdateUserByPrimaryKey(record *User) error {
 	stmt, err := r.Conn.Prepare("UPDATE user SET name = ?, high_score = ? where id = ?")
 	if err != nil {
-		return derror.DatabaseOperationError.Wrap(err)
+		return derror.InternalServerError.Wrap(err)
 	}
 	_, err = stmt.Exec(record.Name, record.HighScore, record.ID)
 	if err != nil {
-		return derror.DatabaseOperationError.Wrap(err)
+		return derror.InternalServerError.Wrap(err)
 	}
 	return nil
 }
@@ -76,12 +76,12 @@ func (r *UserRepository) SelectUserByPrimaryKey(userID string) (*User, error) {
 func (r *UserRepository) SelectUsersOrderByHighScoreAsc(limit int, offset int) ([]*User, error) {
 	stmt, err := r.Conn.Prepare("SELECT * FROM user WHERE high_score > 0 ORDER BY high_score Asc LIMIT ? OFFSET ?")
 	if err != nil {
-		return nil, derror.DatabaseOperationError.Wrap(err)
+		return nil, derror.InternalServerError.Wrap(err)
 	}
 
 	rows, err := stmt.Query(limit, offset-1)
 	if err != nil {
-		return nil, derror.DatabaseOperationError.Wrap(err)
+		return nil, derror.InternalServerError.Wrap(err)
 	}
 
 	return convertToUsers(rows)
@@ -95,7 +95,7 @@ func convertToUser(row *sql.Row) (*User, error) {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-		return nil, derror.DatabaseDataScanError.Wrap(err)
+		return nil, derror.InternalServerError.Wrap(err)
 	}
 	return &user, nil
 }
@@ -115,7 +115,7 @@ func convertToUsers(rows *sql.Rows) ([]*User, error) {
 			if err == sql.ErrNoRows {
 				return nil, nil
 			}
-			return nil, derror.DatabaseDataScanError.Wrap(err)
+			return nil, derror.InternalServerError.Wrap(err)
 		}
 		users = append(users, &user)
 	}

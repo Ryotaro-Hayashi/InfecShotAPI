@@ -29,9 +29,8 @@ func (m *accessMiddleware) Access(nextFunc http.HandlerFunc) http.HandlerFunc {
 
 		requestID, err := uuid.NewRandom()
 		if err != nil {
-			err = derror.GenerateRequestIdError.Wrap(err)
+			err = derror.InternalServerError.Wrap(err)
 			// TODO:アプリケーションログの出力
-			return
 		}
 		if requestID != uuid.Nil {
 			ctx = dcontext.SetRequestID(ctx, requestID.String())

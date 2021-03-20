@@ -50,7 +50,7 @@ func (h *GameHandler) HandleGameFinish(writer http.ResponseWriter, request *http
 	if userID == "" {
 		// TODO:アプリケーションログ
 		//log.Println("userID from context is empty")
-		h.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("failed to find user")))
+		h.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("userID from context is empty")))
 		return
 	}
 
@@ -65,6 +65,5 @@ func (h *GameHandler) HandleGameFinish(writer http.ResponseWriter, request *http
 		return
 	}
 
-	// 獲得コインをレスポンスとして返す
 	h.HttpResponse.Success(writer, request, nil)
 }

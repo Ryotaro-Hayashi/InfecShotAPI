@@ -77,7 +77,7 @@ func (s *UserService) GetUser(serviceRequest *GetUserRequest) (*getUserResponse,
 		return nil, derror.StackError(err)
 	}
 	if user == nil {
-		return nil, derror.BadRequestError.Wrap(errors.New("failed to find user"))
+		return nil, derror.InternalServerError.Wrap(errors.New("empty set"))
 	}
 
 	return &getUserResponse{
