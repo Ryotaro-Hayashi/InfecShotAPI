@@ -1,10 +1,12 @@
 package db
 
 import (
+	"InfecShotAPI/pkg/logging"
 	"database/sql"
 	"fmt"
-	"log"
 	"os"
+
+	"go.uber.org/zap"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -22,7 +24,7 @@ func init() {
 	// パスワード
 	password := os.Getenv("MYSQL_PASSWORD")
 	// 接続先ホスト
-	host := os.Getenv("MYSQL_HOST")
+	//host := os.Getenv("MYSQL_HOST")
 	// 接続先ポート
 	port := os.Getenv("MYSQL_PORT")
 	// 接続先データベース
@@ -32,12 +34,12 @@ func init() {
 	// user:password@tcp(host:port)/database
 	var err error
 	Conn, err = sql.Open(driverName,
-		fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, password, host, port, database))
-	log.Printf("%s:%s@tcp(%s:%s)/%s\n", user, password, host, port, database)
+		fmt.Sprintf("%s:%s@tcp(mysql:%s)/%s", user, password, port, database))
+	logging.ApplicationLogger.Info(fmt.Sprintf("%s:%s@tcp(mysql:%s)/%s\n", user, password, port, database))
 	if err != nil {
-		log.Fatal(err)
+		logging.ApplicationLogger.Fatal("failed to sql.Open()", zap.Error(err))
 	}
 	if err = Conn.Ping(); err != nil {
-		log.Fatal(err)
+		logging.ApplicationLogger.Fatal("failed to sql.DB.Ping()", zap.Error(err))
 	}
 }
