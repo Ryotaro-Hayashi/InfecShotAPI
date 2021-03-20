@@ -2,11 +2,11 @@ package handler
 
 import (
 	"InfecShotAPI/pkg/dcontext"
+	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/http/response"
 	"InfecShotAPI/pkg/server/service"
 	"encoding/json"
-	"fmt"
-	"log"
+	"errors"
 	"net/http"
 )
 
@@ -31,14 +31,16 @@ func (h *GameHandler) HandleGameFinish(writer http.ResponseWriter, request *http
 	// リクエストbodyからスコアを取得
 	var requestBody gameFinishRequest
 	if err := json.NewDecoder(request.Body).Decode(&requestBody); err != nil {
-		log.Println(err)
-		h.HttpResponse.BadRequest(writer, "Bad Request")
+		// TODO:アプリケーションログ
+		//log.Println(err)
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(err))
 		return
 	}
 	// scoreが負の数のときエラーを返す
 	if requestBody.Score < 0 {
-		log.Println(fmt.Sprintf("score is minus. score=%d", requestBody.Score))
-		h.HttpResponse.BadRequest(writer, "Bad Request")
+		// TODO:アプリケーションログ
+		//log.Println(fmt.Sprintf("score is minus. score=%d", requestBody.Score))
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("score is minus")))
 		return
 	}
 
@@ -46,8 +48,9 @@ func (h *GameHandler) HandleGameFinish(writer http.ResponseWriter, request *http
 	ctx := request.Context()
 	userID := dcontext.GetUserIDFromContext(ctx)
 	if userID == "" {
-		log.Println("userID from context is empty")
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		// TODO:アプリケーションログ
+		//log.Println("userID from context is empty")
+		h.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("failed to find user")))
 		return
 	}
 
@@ -56,11 +59,12 @@ func (h *GameHandler) HandleGameFinish(writer http.ResponseWriter, request *http
 		UserId: userID,
 		Score:  requestBody.Score,
 	}); err != nil {
-		log.Println(err)
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		// TODO:アプリケーションログ
+		//log.Println(err)
+		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
 
 	// 獲得コインをレスポンスとして返す
-	h.HttpResponse.Success(writer, nil)
+	h.HttpResponse.Success(writer, request, nil)
 }

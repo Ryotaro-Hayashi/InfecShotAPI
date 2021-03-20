@@ -62,7 +62,9 @@ func StackError(err error) error {
 }
 
 var (
+	InternalServerError    = NewApplicationError(http.StatusInternalServerError, "internal server error", "error")
 	DatabaseOperationError = NewApplicationError(http.StatusInternalServerError, "database operation error", "error")
 	DatabaseDataScanError  = NewApplicationError(http.StatusInternalServerError, "database data scan error", "error")
 	GenerateRequestIdError = NewApplicationError(http.StatusInternalServerError, "generate requestID error", "error")
+	BadRequestError        = NewApplicationError(http.StatusBadRequest, "bad request error", "warn")
 )

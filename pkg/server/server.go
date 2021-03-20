@@ -66,8 +66,7 @@ func httpMethod(apiFunc http.HandlerFunc, method string) http.HandlerFunc {
 		}
 		// 指定のHTTPメソッドでない場合はエラー
 		if request.Method != method {
-			writer.WriteHeader(http.StatusMethodNotAllowed)
-			writer.Write([]byte("Method Not Allowed"))
+			response.HttpError(writer, http.StatusMethodNotAllowed, "Method Not Allowed")
 			return
 		}
 

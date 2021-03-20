@@ -1,10 +1,10 @@
 package handler
 
 import (
+	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/http/response"
 	"InfecShotAPI/pkg/server/service"
-	"fmt"
-	"log"
+	"errors"
 	"net/http"
 	"strconv"
 )
@@ -39,14 +39,16 @@ func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *
 	param := request.URL.Query().Get("start")
 	start, err := strconv.Atoi(param)
 	if err != nil {
-		log.Println(err)
-		h.HttpResponse.BadRequest(writer, "Bad Request")
+		// TODO:アプリケーションログ
+		//log.Println(err)
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(err))
 		return
 	}
 	// startが0以下のときエラーを返す
 	if start <= 0 {
-		log.Println(fmt.Sprintf("start rank is 0 or less. start=%d", start))
-		h.HttpResponse.BadRequest(writer, "Bad Request")
+		// TODO:アプリケーションログ
+		//log.Println(fmt.Sprintf("start rank is 0 or less. start=%d", start))
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("failed to get start rank")))
 		return
 	}
 
@@ -56,8 +58,9 @@ func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *
 		Limit:  10,
 	})
 	if err != nil {
-		log.Println(err)
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		// TODO:アプリケーションログ
+		//log.Println(err)
+		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
 
@@ -73,5 +76,5 @@ func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *
 		ranks = append(ranks, rank)
 	}
 
-	h.HttpResponse.Success(writer, rankingListResponse{Ranks: ranks})
+	h.HttpResponse.Success(writer, request, rankingListResponse{Ranks: ranks})
 }

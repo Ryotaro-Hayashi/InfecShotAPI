@@ -3,8 +3,6 @@ package model
 import (
 	"InfecShotAPI/pkg/derror"
 	"database/sql"
-	"errors"
-	"log"
 )
 
 // User userテーブルデータ
@@ -39,7 +37,6 @@ var _ UserRepositoryInterface = (*UserRepository)(nil)
 // InsertUser データベースをレコードを登録する
 func (r *UserRepository) InsertUser(record *User) error {
 	stmt, err := r.Conn.Prepare("INSERT INTO user(id, auth_token, name, high_score) VALUES(?, ?, ?, ?)")
-	err = errors.New("test error")
 	if err != nil {
 		return derror.DatabaseOperationError.Wrap(err)
 	}
@@ -98,7 +95,6 @@ func convertToUser(row *sql.Row) (*User, error) {
 		if err == sql.ErrNoRows {
 			return nil, nil
 		}
-		log.Println(err)
 		return nil, derror.DatabaseDataScanError.Wrap(err)
 	}
 	return &user, nil
@@ -119,10 +115,9 @@ func convertToUsers(rows *sql.Rows) ([]*User, error) {
 			if err == sql.ErrNoRows {
 				return nil, nil
 			}
-			log.Println(err)
 			return nil, derror.DatabaseDataScanError.Wrap(err)
 		}
 		users = append(users, &user)
 	}
-	return users, err
+	return users, nil
 }

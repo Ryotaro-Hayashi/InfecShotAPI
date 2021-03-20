@@ -54,7 +54,7 @@ func AccessLogging(request *http.Request, err error) {
 				zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())))
 		}
 	} else {
-		accessLogger.Infow("access log",
+		accessLogger.Infow("succeed in access",
 			zap.Int("statusCode", http.StatusOK),
 			zap.String("host", request.Host),
 			zap.String("remoteAddress", request.RemoteAddr),
