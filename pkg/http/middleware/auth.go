@@ -10,20 +10,20 @@ import (
 	"net/http"
 )
 
-type Middleware struct {
+type authMiddleware struct {
 	HttpResponse   response.HttpResponseInterface
 	UserRepository model.UserRepositoryInterface
 }
 
-func NewMiddleware(httpResponse response.HttpResponseInterface, userRepository model.UserRepositoryInterface) *Middleware {
-	return &Middleware{
+func NewAuthMiddleware(httpResponse response.HttpResponseInterface, userRepository model.UserRepositoryInterface) *authMiddleware {
+	return &authMiddleware{
 		HttpResponse:   httpResponse,
 		UserRepository: userRepository,
 	}
 }
 
 // Authenticate ユーザ認証を行ってContextへユーザID情報を保存する
-func (m *Middleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFunc {
+func (m *authMiddleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 
 		ctx := request.Context()

@@ -1,7 +1,10 @@
 package response
 
 import (
+	"InfecShotAPI/pkg/derror"
+	"InfecShotAPI/pkg/logging"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 )
@@ -12,6 +15,7 @@ type HttpResponse struct{}
 // HttpResponseInterface レスポンス出力のためのインターフェース
 type HttpResponseInterface interface {
 	Success(writer http.ResponseWriter, response interface{})
+	Failed(writer http.ResponseWriter, request *http.Request, err error)
 	BadRequest(writer http.ResponseWriter, message string)
 	InternalServerError(writer http.ResponseWriter, message string)
 }
@@ -33,6 +37,22 @@ func (hr *HttpResponse) Success(writer http.ResponseWriter, response interface{}
 		return
 	}
 	writer.Write(data)
+}
+
+// Failed リクエスト失敗時のエラー処理
+func (hr *HttpResponse) Failed(writer http.ResponseWriter, request *http.Request, err error) {
+	var appErr derror.ApplicationError
+	if errors.As(err, &appErr) {
+		switch appErr.Code {
+		case http.StatusBadRequest:
+			hr.BadRequest(writer, appErr.Msg)
+		case http.StatusInternalServerError:
+			hr.InternalServerError(writer, appErr.Msg)
+		}
+	} else {
+		hr.InternalServerError(writer, "Unknown Internal Server Error")
+	}
+	logging.AccessLogging(request, err)
 }
 
 // BadRequest HTTPコード:400 BadRequestを処理する

@@ -2,9 +2,11 @@ package handler
 
 import (
 	"InfecShotAPI/pkg/dcontext"
+	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/http/response"
 	"InfecShotAPI/pkg/server/service"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -48,8 +50,11 @@ func (h *UserHandler) HandleUserCreate(writer http.ResponseWriter, request *http
 	// ユーザ情報作成のロジック
 	res, err := h.UserService.CreateUser(&service.CreateUserRequest{Name: requestBody.Name})
 	if err != nil {
-		log.Println(err)
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		//log.Printf("%+v", fmt.Sprintf("%+v", derror.StackError(err)))
+		s := fmt.Sprintf("%+v", derror.StackError(err))
+		log.Println(s)
+		//log.Printf("%+v", derror.StackError(err))
+		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
 

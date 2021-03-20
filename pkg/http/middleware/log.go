@@ -2,14 +2,25 @@ package middleware
 
 import (
 	"InfecShotAPI/pkg/dcontext"
-	"InfecShotAPI/pkg/logging"
+	"InfecShotAPI/pkg/derror"
+	"InfecShotAPI/pkg/http/response"
 	"context"
 	"net/http"
 
 	"github.com/google/uuid"
 )
 
-func AccessLogging(nextFunc http.HandlerFunc) http.HandlerFunc {
+type accessMiddleware struct {
+	HttpResponse response.HttpResponseInterface
+}
+
+func NewAccessMiddleware(httpResponse response.HttpResponseInterface) *accessMiddleware {
+	return &accessMiddleware{
+		HttpResponse: httpResponse,
+	}
+}
+
+func (m *accessMiddleware) Access(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		ctx := request.Context()
 		if ctx == nil {
@@ -18,11 +29,14 @@ func AccessLogging(nextFunc http.HandlerFunc) http.HandlerFunc {
 
 		requestID, err := uuid.NewRandom()
 		if err != nil {
-			// TODO:Error構造体を作成
+			err = derror.GenerateRequestIdError.Wrap(err)
+			// TODO:アプリケーションログの出力
+			return
 		}
-		ctx = dcontext.SetRequestID(ctx, requestID.String())
-		request = request.WithContext(ctx)
-		logging.AccessLogging(request, err)
+		if requestID != uuid.Nil {
+			ctx = dcontext.SetRequestID(ctx, requestID.String())
+			request = request.WithContext(ctx)
+		}
 
 		nextFunc(writer, request)
 	}

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/server/model"
 	"errors"
 
@@ -63,7 +64,7 @@ func (s *UserService) CreateUser(serviceRequest *CreateUserRequest) (*createUser
 		Name:      serviceRequest.Name,
 		HighScore: 0,
 	}); err != nil {
-		return nil, err
+		return nil, derror.StackError(err)
 	}
 
 	return &createUserResponse{Token: authToken.String()}, nil
