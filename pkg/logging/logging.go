@@ -31,7 +31,8 @@ func AccessLogging(request *http.Request, err error) {
 					zap.String("remoteAddress", request.RemoteAddr),
 					zap.String("method", request.Method),
 					zap.String("path", request.URL.Path),
-					zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())))
+					zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())),
+					zap.String("userID", dcontext.GetUserIDFromContext(request.Context())))
 			case "warn":
 				accessLogger.Warnw(appErr.Msg,
 					zap.Int("statusCode", appErr.Code),
@@ -41,7 +42,8 @@ func AccessLogging(request *http.Request, err error) {
 					zap.String("remoteAddress", request.RemoteAddr),
 					zap.String("method", request.Method),
 					zap.String("path", request.URL.Path),
-					zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())))
+					zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())),
+					zap.String("userID", dcontext.GetUserIDFromContext(request.Context())))
 			}
 		} else {
 			accessLogger.Errorw(appErr.Msg,
@@ -52,7 +54,8 @@ func AccessLogging(request *http.Request, err error) {
 				zap.String("remoteAddress", request.RemoteAddr),
 				zap.String("method", request.Method),
 				zap.String("path", request.URL.Path),
-				zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())))
+				zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())),
+				zap.String("userID", dcontext.GetUserIDFromContext(request.Context())))
 		}
 	} else {
 		accessLogger.Infow("succeed in access",
@@ -61,7 +64,8 @@ func AccessLogging(request *http.Request, err error) {
 			zap.String("remoteAddress", request.RemoteAddr),
 			zap.String("method", request.Method),
 			zap.String("path", request.URL.Path),
-			zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())))
+			zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())),
+			zap.String("userID", dcontext.GetUserIDFromContext(request.Context())))
 	}
 }
 
