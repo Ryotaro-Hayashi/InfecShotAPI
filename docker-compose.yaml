@@ -72,7 +72,7 @@ services:
       - loki
 
   promtail:
-    image: grafana/promtail:latest
+    image: grafana/promtail
     container_name: promtail
     ports:
       - 9080:9080

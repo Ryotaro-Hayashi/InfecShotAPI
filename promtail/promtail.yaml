@@ -11,5 +11,13 @@ scrape_configs:
       - targets:
         - api
         labels:
-          job: flog
+          job: api-access-log
           __path__: /var/log/access.log
+
+  - job_name: api-application-log
+    static_configs:
+      - targets:
+        - api
+        labels:
+          job: api-application-log
+          __path__: /var/log/application.log
