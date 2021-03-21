@@ -41,7 +41,8 @@ func NewRankingHandler(httpResponse response.HttpResponseInterface, rankingServi
 // HandleRankingList ランキング情報取得
 func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *http.Request) {
 	requestID := dcontext.GetRequestIDFromContext(request.Context())
-	logging.ApplicationLogger.Info("start getting rank", zap.String("requestID", requestID))
+	logging.ApplicationLogger.Info("start getting rank",
+		zap.String("requestID", requestID))
 
 	// クエリストリングから開始順位の受け取り
 	param := request.URL.Query().Get("start")
@@ -50,13 +51,17 @@ func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *
 		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(err))
 		return
 	}
-	logging.ApplicationLogger.Info("succeed in getting query", zap.String("requestID", requestID), zap.String("query", fmt.Sprintf("start=%d", start)))
+	logging.ApplicationLogger.Info("succeed in getting query",
+		zap.String("requestID", requestID),
+		zap.String("query", fmt.Sprintf("start=%d", start)))
 	// startが0以下のときエラーを返す
 	if start <= 0 {
 		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("failed to get start rank")))
 		return
 	}
-	logging.ApplicationLogger.Debug("succeed in getting start rank", zap.String("requestID", requestID), zap.Int("startRank", start))
+	logging.ApplicationLogger.Debug("succeed in getting start rank",
+		zap.String("requestID", requestID),
+		zap.Int("startRank", start))
 
 	// ランキング情報取得のロジック
 	res, err := h.RankingService.GetRankInfoList(&service.GetRankInfoListRequest{

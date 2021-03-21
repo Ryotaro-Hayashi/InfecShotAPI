@@ -50,7 +50,9 @@ func (h *UserHandler) HandleUserCreate(writer http.ResponseWriter, request *http
 		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(err))
 		return
 	}
-	logging.ApplicationLogger.Info("succeed in decoding request body", zap.String("requestID", requestID), zap.Any("requestBody", requestBody))
+	logging.ApplicationLogger.Info("succeed in decoding request body",
+		zap.String("requestID", requestID),
+		zap.Any("requestBody", requestBody))
 
 	// ユーザ情報作成のロジック
 	res, err := h.UserService.CreateUser(&service.CreateUserRequest{Name: requestBody.Name})
@@ -68,16 +70,16 @@ func (h *UserHandler) HandleUserCreate(writer http.ResponseWriter, request *http
 // HandleUserGet ユーザ情報取得処理
 func (h *UserHandler) HandleUserGet(writer http.ResponseWriter, request *http.Request) {
 	requestID := dcontext.GetRequestIDFromContext(request.Context())
-	logging.ApplicationLogger.Info("start getting user", zap.String("requestID", requestID))
+	userID := dcontext.GetUserIDFromContext(request.Context())
+	logging.ApplicationLogger.Info("start getting user",
+		zap.String("requestID", requestID),
+		zap.String("userID", userID))
 
-	// Contextから認証済みのユーザIDを取得
-	ctx := request.Context()
-	userID := dcontext.GetUserIDFromContext(ctx)
 	if userID == "" {
 		h.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("userID from context is empty")))
 		return
 	}
-	logging.ApplicationLogger.Info("succeed in getting userID from context", zap.String("requestID", requestID), zap.String("userID", userID))
+	logging.ApplicationLogger.Debug("succeed in getting userID from context", zap.String("requestID", requestID))
 
 	// ユーザ情報取得のロジック
 	res, err := h.UserService.GetUser(&service.GetUserRequest{ID: userID})

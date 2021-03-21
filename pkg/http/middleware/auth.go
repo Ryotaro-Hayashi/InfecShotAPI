@@ -53,7 +53,9 @@ func (m *authMiddleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFun
 
 		// ユーザIDをContextへ保存して以降の処理に利用する
 		ctx = dcontext.SetUserID(ctx, user.ID)
-		logging.ApplicationLogger.Debug("succeed in authentication", zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())))
+		logging.ApplicationLogger.Debug("succeed in authentication",
+			zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())),
+			zap.String("userID", dcontext.GetUserIDFromContext(ctx)))
 
 		// 次の処理
 		nextFunc(writer, request.WithContext(ctx))
