@@ -1,12 +1,17 @@
 package handler
 
 import (
-	"2103_proto_f_server/pkg/http/response"
-	"2103_proto_f_server/pkg/server/service"
+	"InfecShotAPI/pkg/dcontext"
+	"InfecShotAPI/pkg/derror"
+	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/logging"
+	"InfecShotAPI/pkg/server/service"
+	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
+
+	"go.uber.org/zap"
 )
 
 type rankingListResponse struct {
@@ -35,20 +40,28 @@ func NewRankingHandler(httpResponse response.HttpResponseInterface, rankingServi
 
 // HandleRankingList ランキング情報取得
 func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *http.Request) {
+	requestID := dcontext.GetRequestIDFromContext(request.Context())
+	logging.ApplicationLogger.Info("start getting rank",
+		zap.String("requestID", requestID))
+
 	// クエリストリングから開始順位の受け取り
 	param := request.URL.Query().Get("start")
 	start, err := strconv.Atoi(param)
 	if err != nil {
-		log.Println(err)
-		h.HttpResponse.BadRequest(writer, "Bad Request")
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(err))
 		return
 	}
+	logging.ApplicationLogger.Info("succeed in getting query",
+		zap.String("requestID", requestID),
+		zap.String("query", fmt.Sprintf("start=%d", start)))
 	// startが0以下のときエラーを返す
 	if start <= 0 {
-		log.Println(fmt.Sprintf("start rank is 0 or less. start=%d", start))
-		h.HttpResponse.BadRequest(writer, "Bad Request")
+		h.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("failed to get start rank")))
 		return
 	}
+	logging.ApplicationLogger.Debug("succeed in getting start rank",
+		zap.String("requestID", requestID),
+		zap.Int("startRank", start))
 
 	// ランキング情報取得のロジック
 	res, err := h.RankingService.GetRankInfoList(&service.GetRankInfoListRequest{
@@ -56,10 +69,10 @@ func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *
 		Limit:  10,
 	})
 	if err != nil {
-		log.Println(err)
-		h.HttpResponse.InternalServerError(writer, "Internal Server Error")
+		h.HttpResponse.Failed(writer, request, derror.StackError(err))
 		return
 	}
+	logging.ApplicationLogger.Debug("succeed in getting rank", zap.String("requestID", requestID))
 
 	// レスポンスの整形
 	var ranks []*rank
@@ -73,5 +86,6 @@ func (h *RankingHandler) HandleRankingList(writer http.ResponseWriter, request *
 		ranks = append(ranks, rank)
 	}
 
-	h.HttpResponse.Success(writer, rankingListResponse{Ranks: ranks})
+	h.HttpResponse.Success(writer, request, rankingListResponse{Ranks: ranks})
+	logging.ApplicationLogger.Info("finished getting rank", zap.String("requestID", requestID))
 }

@@ -1,9 +1,9 @@
 package service
 
 import (
-	"2103_proto_f_server/pkg/server/model"
+	"InfecShotAPI/pkg/derror"
+	"InfecShotAPI/pkg/server/model"
 	"errors"
-	"fmt"
 )
 
 type FinishGameRequest struct {
@@ -32,10 +32,10 @@ func (s *GameService) FinishGame(serviceRequest *FinishGameRequest) error {
 	// ゲーム終了前のユーザ情報の取得
 	user, err := s.UserRepository.SelectUserByPrimaryKey(serviceRequest.UserId)
 	if err != nil {
-		return err
+		return derror.StackError(err)
 	}
 	if user == nil {
-		return errors.New(fmt.Sprintf("user not found. userID=%s", serviceRequest.UserId))
+		return derror.BadRequestError.Wrap(errors.New("failed to find user"))
 	}
 
 	// ユーザのハイスコアとリクエストのスコアを比較
@@ -43,9 +43,9 @@ func (s *GameService) FinishGame(serviceRequest *FinishGameRequest) error {
 		user.HighScore = serviceRequest.Score
 		// ハイスコアを更新
 		if err = s.UserRepository.UpdateUserByPrimaryKey(user); err != nil {
-			return err
+			return derror.StackError(err)
 		}
 	}
 
-	return err
+	return nil
 }

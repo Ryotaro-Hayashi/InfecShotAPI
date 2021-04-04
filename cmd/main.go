@@ -1,7 +1,7 @@
 package main
 
 import (
-	"2103_proto_f_server/pkg/server"
+	"InfecShotAPI/pkg/server"
 	"flag"
 )
 

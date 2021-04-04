@@ -1,7 +1,8 @@
 package service
 
 import (
-	"2103_proto_f_server/pkg/server/model"
+	"InfecShotAPI/pkg/derror"
+	"InfecShotAPI/pkg/server/model"
 	"errors"
 
 	"github.com/google/uuid"
@@ -47,13 +48,13 @@ func (s *UserService) CreateUser(serviceRequest *CreateUserRequest) (*createUser
 	// UUIDでユーザIDを生成する
 	userID, err := uuid.NewRandom()
 	if err != nil {
-		return nil, err
+		return nil, derror.InternalServerError.Wrap(err)
 	}
 
 	// UUIDで認証トークンを生成する
 	authToken, err := uuid.NewRandom()
 	if err != nil {
-		return nil, err
+		return nil, derror.InternalServerError.Wrap(err)
 	}
 
 	// データベースにユーザデータを登録する
@@ -63,7 +64,7 @@ func (s *UserService) CreateUser(serviceRequest *CreateUserRequest) (*createUser
 		Name:      serviceRequest.Name,
 		HighScore: 0,
 	}); err != nil {
-		return nil, err
+		return nil, derror.StackError(err)
 	}
 
 	return &createUserResponse{Token: authToken.String()}, nil
@@ -73,10 +74,10 @@ func (s *UserService) CreateUser(serviceRequest *CreateUserRequest) (*createUser
 func (s *UserService) GetUser(serviceRequest *GetUserRequest) (*getUserResponse, error) {
 	user, err := s.UserRepository.SelectUserByPrimaryKey(serviceRequest.ID)
 	if err != nil {
-		return nil, err
+		return nil, derror.StackError(err)
 	}
 	if user == nil {
-		return nil, errors.New("user not found")
+		return nil, derror.InternalServerError.Wrap(errors.New("empty set"))
 	}
 
 	return &getUserResponse{

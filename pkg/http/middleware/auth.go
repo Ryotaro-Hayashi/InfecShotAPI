@@ -1,29 +1,32 @@
 package middleware
 
 import (
-	"2103_proto_f_server/pkg/dcontext"
-	"2103_proto_f_server/pkg/http/response"
-	"2103_proto_f_server/pkg/server/model"
+	"InfecShotAPI/pkg/dcontext"
+	"InfecShotAPI/pkg/derror"
+	"InfecShotAPI/pkg/http/response"
+	"InfecShotAPI/pkg/logging"
+	"InfecShotAPI/pkg/server/model"
 	"context"
 	"errors"
-	"log"
 	"net/http"
+
+	"go.uber.org/zap"
 )
 
-type Middleware struct {
+type authMiddleware struct {
 	HttpResponse   response.HttpResponseInterface
 	UserRepository model.UserRepositoryInterface
 }
 
-func NewMiddleware(httpResponse response.HttpResponseInterface, userRepository model.UserRepositoryInterface) *Middleware {
-	return &Middleware{
+func NewAuthMiddleware(httpResponse response.HttpResponseInterface, userRepository model.UserRepositoryInterface) *authMiddleware {
+	return &authMiddleware{
 		HttpResponse:   httpResponse,
 		UserRepository: userRepository,
 	}
 }
 
 // Authenticate ユーザ認証を行ってContextへユーザID情報を保存する
-func (m *Middleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFunc {
+func (m *authMiddleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 
 		ctx := request.Context()
@@ -34,25 +37,25 @@ func (m *Middleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFunc {
 		// リクエストヘッダからx-token(認証トークン)を取得
 		token := request.Header.Get("x-token")
 		if token == "" {
-			log.Println("x-token is empty")
-			m.HttpResponse.BadRequest(writer, "Bad Request")
+			m.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("failed to get token")))
 			return
 		}
 
 		user, err := m.UserRepository.SelectUserByAuthToken(token)
 		if err != nil {
-			log.Println(err)
-			m.HttpResponse.InternalServerError(writer, "Internal Server Error")
+			m.HttpResponse.Failed(writer, request, derror.StackError(err))
 			return
 		}
 		if user == nil {
-			log.Println(errors.New("user not found"))
-			m.HttpResponse.InternalServerError(writer, "Internal Server Error")
+			m.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("empty set user")))
 			return
 		}
 
 		// ユーザIDをContextへ保存して以降の処理に利用する
 		ctx = dcontext.SetUserID(ctx, user.ID)
+		logging.ApplicationLogger.Debug("succeed in authentication",
+			zap.String("requestID", dcontext.GetRequestIDFromContext(request.Context())),
+			zap.String("userID", dcontext.GetUserIDFromContext(ctx)))
 
 		// 次の処理
 		nextFunc(writer, request.WithContext(ctx))

@@ -1,8 +1,25 @@
 version: "3"
 
+networks:
+  loki:
+
 services:
+  api:
+    tty: true
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    container_name: api
+    volumes:
+      - .:/InfecShotAPI
+    networks:
+      - loki
+
   mysql:
     image: mysql:5.7
+    container_name: mysql
     ports:
       - 3306:3306
     command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
@@ -11,10 +28,10 @@ services:
       - db-data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: "ca-tech-dojo"
-    container_name: api
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     environment:
       PMA_ARBITRARY: 1
       PMA_HOST: mysql
@@ -27,12 +44,44 @@ services:
 
   swagger-ui:
     image: swaggerapi/swagger-ui:latest
+    container_name: swagger-ui
     environment:
       SWAGGER_JSON: /api/api-document.yaml
     volumes:
-      - ./api-document.yaml:/api/api-document.yaml:ro
+      - ./api-document.yaml:/api/api-document.yaml
     ports:
-      - 127.0.0.1:3000:8080
+      - 3030:8080
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      - GF_EXPLORE_ENABLED=true
+    ports:
+      - 3000:3000
+    networks:
+      - loki
+
+  loki:
+    image: grafana/loki
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - 3100:3100
+    networks:
+      - loki
+
+  promtail:
+    image: grafana/promtail
+    container_name: promtail
+    ports:
+      - 9080:9080
+    volumes:
+      - ./promtail:/promtail
+      - ./pkg/logging/log:/var/log
+    command: -config.file=/promtail/promtail.yaml
+    networks:
+      - loki
 
 volumes:
   db-data:
