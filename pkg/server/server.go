@@ -7,6 +7,7 @@ import (
 	"InfecShotAPI/pkg/server/handler"
 	"InfecShotAPI/pkg/server/model"
 	"InfecShotAPI/pkg/server/service"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -33,6 +34,10 @@ func Serve(addr string) {
 	http.HandleFunc("/user/get", accessMiddleware.Access(get(authMiddleware.Authenticate(userHandler.HandleUserGet))))
 	http.HandleFunc("/game/finish", accessMiddleware.Access(post(authMiddleware.Authenticate(gameHandler.HandleGameFinish))))
 	http.HandleFunc("/ranking/list", accessMiddleware.Access(get(rankingHandler.HandleRankingList)))
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello World")
+	})
 
 	/* ===== サーバの起動 ===== */
 	log.Println("Server running...")
