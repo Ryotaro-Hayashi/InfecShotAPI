@@ -1,0 +1,13 @@
+version: "3"
+
+networks:
+  default:
+    external:
+      name: shared
+
+services:
+  api:
+    environment:
+      VIRTUAL_HOST: infecshot.hysrtr.com
+      LETSENCRYPT_HOST: infecshot.hysrtr.com
+      LETSENCRYPT_EMAIL: hys.rtr.forit@gmail.com
