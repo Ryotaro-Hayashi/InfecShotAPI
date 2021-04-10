@@ -9,5 +9,6 @@ services:
   api:
     environment:
       VIRTUAL_HOST: infecshot.hysrtr.com
+      VIRTUAL_PORT: 8080
       LETSENCRYPT_HOST: infecshot.hysrtr.com
       LETSENCRYPT_EMAIL: hys.rtr.forit@gmail.com
