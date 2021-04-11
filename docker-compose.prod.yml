@@ -3,6 +3,7 @@ version: "3"
 networks:
   shared:
     external: true
+  loki:
 
 services:
   api:
@@ -12,4 +13,36 @@ services:
       LETSENCRYPT_HOST: infecshot.hysrtr.com
       LETSENCRYPT_EMAIL: hys.rtr.forit@gmail.com
     networks:
-      - shared 
+      - shared
+      - loki
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      - GF_EXPLORE_ENABLED=true
+    ports:
+      - 3000:3000
+    networks:
+      - loki
+
+  loki:
+    image: grafana/loki
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - 3100:3100
+    networks:
+      - loki
+
+  promtail:
+    image: grafana/promtail
+    container_name: promtail
+    ports:
+      - 9080:9080
+    volumes:
+      - ./promtail:/promtail
+      - ./pkg/logging/log:/var/log
+    command: -config.file=/promtail/promtail.yaml
+    networks:
+      - loki
