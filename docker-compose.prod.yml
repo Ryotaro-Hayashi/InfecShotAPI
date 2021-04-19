@@ -4,6 +4,7 @@ networks:
   shared:
     external: true
   loki:
+    external: true
 
 services:
   api:
@@ -14,25 +15,6 @@ services:
       LETSENCRYPT_EMAIL: hys.rtr.forit@gmail.com
     networks:
       - shared
-      - loki
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    environment:
-      - GF_EXPLORE_ENABLED=true
-    ports:
-      - 3000:3000
-    networks:
-      - loki
-
-  loki:
-    image: grafana/loki
-    container_name: loki
-    command: -config.file=/etc/loki/local-config.yaml
-    ports:
-      - 3100:3100
-    networks:
       - loki
 
   promtail:
