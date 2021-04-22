@@ -13,9 +13,9 @@ down:
 mysql:
 	docker exec -it mysql sh
 
-.PHONY: api
+.PHONY: infecshot-api
 api:
-	docker exec -it api sh
+	docker exec -it infecshot-api sh
 
 .PHONY: server
 server:

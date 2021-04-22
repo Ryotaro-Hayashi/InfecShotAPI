@@ -3,8 +3,6 @@ version: "3"
 networks:
   shared:
     external: true
-  loki:
-    external: true
 
 services:
   api:
@@ -15,16 +13,3 @@ services:
       LETSENCRYPT_EMAIL: hys.rtr.forit@gmail.com
     networks:
       - shared
-      - loki
-
-  promtail:
-    image: grafana/promtail
-    container_name: promtail
-    ports:
-      - 9080:9080
-    volumes:
-      - ./promtail:/promtail
-      - ./pkg/logging/log:/var/log
-    command: -config.file=/promtail/promtail.yaml
-    networks:
-      - loki
