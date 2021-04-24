@@ -12,4 +12,4 @@ services:
       LETSENCRYPT_HOST: infecshot.hysrtr.com
       LETSENCRYPT_EMAIL: hys.rtr.forit@gmail.com
     networks:
-      - shared 
+      - shared

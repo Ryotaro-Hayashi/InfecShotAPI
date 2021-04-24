@@ -1,0 +1,52 @@
+version: "3"
+
+networks:
+  loki:
+    external: true
+
+services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger-ui
+    environment:
+      SWAGGER_JSON: /api/api-document.yaml
+    volumes:
+      - ./api-document.yaml:/api/api-document.yaml
+    ports:
+      - 3030:8080
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: "ca-tech-dojo"
+    links:
+      - mysql
+    ports:
+      - 4000:80
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      - GF_EXPLORE_ENABLED=true
+    ports:
+      - 3000:3000
+    networks:
+      - loki
+
+  loki:
+    image: grafana/loki
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - 3100:3100
+    networks:
+      - loki
+
+volumes:
+  db-data:
+    driver: local
