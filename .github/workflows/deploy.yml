@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  build and test:
+  build_test:
     name: Build and Test
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +27,7 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: build and test
+    needs: build_test
     runs-on: ubuntu-latest
     steps:
       - name: Configure SSH
