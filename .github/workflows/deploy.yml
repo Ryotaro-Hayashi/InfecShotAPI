@@ -65,7 +65,7 @@ jobs:
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
-        run: ssh prod 'cd ~/InfecShotAPI/ && git remote set-url origin https://'${GIT_USERNAME}':'${GIT_PASSWORD}'@github.com/Ryotaro-Hayashi/InfecShotAPI.git && git pull origin main'
+        run: ssh prod 'cd ~/InfecShotAPI/ && git remote set-url origin https://'${GIT_USERNAME}':'${GIT_PASSWORD}'@github.com/Ryotaro-Hayashi/InfecShotAPI.git && git pull origin master'
 
       - name: Start the server
         env:
@@ -75,4 +75,4 @@ jobs:
           MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         run: |
-          ssh prod 'cd ~/InfecShotAPI/ && MYSQL_USER='${MYSQL_USER}' MYSQL_PASSWORD='${MYSQL_PASSWORD}' MYSQL_HOST='${MYSQL_HOST}' MYSQL_PORT='${MYSQL_PORT}' MYSQL_DATABASE='${MYSQL_DATABASE}' nohup go run cmd/main.go &'
+          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api MYSQL_USER='${MYSQL_USER}' MYSQL_PASSWORD='${MYSQL_PASSWORD}' MYSQL_HOST='${MYSQL_HOST}' MYSQL_PORT='${MYSQL_PORT}' MYSQL_DATABASE='${MYSQL_DATABASE}' go run cmd/main.go &'
