@@ -75,4 +75,4 @@ jobs:
           MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         run: |
-          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api MYSQL_USER='${MYSQL_USER}' MYSQL_PASSWORD='${MYSQL_PASSWORD}' MYSQL_HOST='${MYSQL_HOST}' MYSQL_PORT='${MYSQL_PORT}' MYSQL_DATABASE='${MYSQL_DATABASE}' go run cmd/main.go &'
+          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api sh && MYSQL_USER='${MYSQL_USER}' MYSQL_PASSWORD='${MYSQL_PASSWORD}' MYSQL_HOST='${MYSQL_HOST}' MYSQL_PORT='${MYSQL_PORT}' MYSQL_DATABASE='${MYSQL_DATABASE}' go run cmd/main.go &'
