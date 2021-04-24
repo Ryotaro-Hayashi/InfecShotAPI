@@ -8,8 +8,8 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  build and test:
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -21,25 +21,13 @@ jobs:
 
     - name: Build
       run: go build -v ./...
-      
-  test:
-    name: Test
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
 
     - name: Test
       run: go test -v ./...
 
   deploy:
     name: Deploy
-    needs: [ build, test ]
+    needs: build and test
     runs-on: ubuntu-latest
     steps:
       - name: Configure SSH
@@ -68,11 +56,5 @@ jobs:
         run: ssh prod 'cd ~/InfecShotAPI/ && git remote set-url origin https://'${GIT_USERNAME}':'${GIT_PASSWORD}'@github.com/Ryotaro-Hayashi/InfecShotAPI.git && git pull origin master'
 
       - name: Start the server
-        env:
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_HOST: ${{ secrets.MYSQL_HOST }}
-          MYSQL_PORT: ${{ secrets.MYSQL_PORT }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
         run: |
-          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api sh && MYSQL_USER='${MYSQL_USER}' MYSQL_PASSWORD='${MYSQL_PASSWORD}' MYSQL_HOST='${MYSQL_HOST}' MYSQL_PORT='${MYSQL_PORT}' MYSQL_DATABASE='${MYSQL_DATABASE}' go run cmd/main.go &'
+          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api go run cmd/main.go &'
