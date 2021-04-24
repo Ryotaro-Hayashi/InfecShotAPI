@@ -59,7 +59,7 @@ jobs:
             StrictHostKeyChecking no
           END
       - name: Stop the server
-        run: ssh prod 'cd ~/InfecShotAPI/ && pkill -e go && pkill -e main'
+        run: ssh prod 'cd ~/InfecShotAPI/ && sudo pkill -e go && sudo pkill -e main'
 
       - name: Git pull
         env:
