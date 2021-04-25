@@ -15,6 +15,12 @@ services:
     container_name: infecshot-api
     volumes:
       - .:/InfecShotAPI
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     networks:
       - loki
 
@@ -40,7 +46,7 @@ services:
       - ./db/init:/docker-entrypoint-initdb.d
       - db-data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: "ca-tech-dojo"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
 volumes:
   db-data:

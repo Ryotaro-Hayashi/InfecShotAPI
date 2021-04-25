@@ -21,8 +21,8 @@ services:
     environment:
       PMA_ARBITRARY: 1
       PMA_HOST: mysql
-      PMA_USER: root
-      PMA_PASSWORD: "ca-tech-dojo"
+      PMA_USER: ${MYSQL_USER}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
     links:
       - mysql
     ports:

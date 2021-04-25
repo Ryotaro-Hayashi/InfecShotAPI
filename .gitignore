@@ -2,3 +2,5 @@
 nohup.out
 
 pkg/logging/log/
+
+.env

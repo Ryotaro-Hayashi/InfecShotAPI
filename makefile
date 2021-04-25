@@ -11,7 +11,7 @@ down:
 	docker-compose down -v --remove-orphans
 
 mysql:
-	docker exec -it mysql sh
+	docker exec -it infecshot-mysql sh
 
 .PHONY: infecshot-api
 api:
