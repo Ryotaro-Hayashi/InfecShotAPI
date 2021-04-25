@@ -57,4 +57,4 @@ jobs:
 
       - name: Start the server
         run: |
-          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api nohup go run cmd/main.go > /dev/null &'
+          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api nohup go run cmd/main.go < /dev/null 2>&1 /dev/null &'
