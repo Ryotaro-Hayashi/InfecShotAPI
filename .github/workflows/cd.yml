@@ -1,29 +1,12 @@
 name: deploy
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
+    types: [closed]
 
 jobs:
-
-  build_test:
-    name: Build and Test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-
-    - name: Build
-      run: go build -v ./...
-
-    - name: Test
-      run: go test -v ./...
 
   deploy:
     name: Deploy
@@ -46,15 +29,9 @@ jobs:
             IdentityFile ~/.ssh/prod.key
             StrictHostKeyChecking no
           END
-      - name: Stop the server
-        run: ssh prod 'cd ~/InfecShotAPI/ && sudo pkill -e go && sudo pkill -e main'
 
       - name: Git pull
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
         run: ssh prod 'cd ~/InfecShotAPI/ && git remote set-url origin https://'${GIT_USERNAME}':'${GIT_PASSWORD}'@github.com/Ryotaro-Hayashi/InfecShotAPI.git && git pull origin master'
-
-      - name: Start the server
-        run: |
-          ssh prod 'cd ~/InfecShotAPI/ && docker exec infecshot-api go run cmd/main.go &>/dev/null &'
