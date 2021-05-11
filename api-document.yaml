@@ -1,13 +1,9 @@
 openapi: 3.0.2
 info:
-  title: プロトスプリントリーグ チームF
-  description: |-
-    <p>プロトスプリントリーグ チームF API仕様</p><br>
-    <p>本番環境のBaseURLは<b>http://35.72.146.193:8080/</b></p>
+  title: InfecShot API仕様
   version: 1.0.0
 servers:
   - url: http://localhost:8080/
-  - url: http://35.72.146.193:8080/
 tags:
   - name: user
     description: ユーザ関連APIs

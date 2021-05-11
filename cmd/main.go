@@ -11,7 +11,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&addr, "addr", ":8080", "tcp host:port to connect")
+	flag.StringVar(&addr, "addr", ":80", "tcp host:port to connect")
 	flag.Parse()
 }
 

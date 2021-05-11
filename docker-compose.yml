@@ -1,0 +1,53 @@
+version: "3"
+
+networks:
+  loki:
+    external: true
+
+services:
+  api:
+    tty: true
+    build: .
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
+    container_name: infecshot-api
+    volumes:
+      - .:/InfecShotAPI
+    environment:
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    networks:
+      - loki
+
+  promtail:
+    image: grafana/promtail
+    container_name: infecshot-promtail
+    ports:
+      - 9080:9080
+    volumes:
+      - ./promtail:/promtail
+      - ./pkg/logging/log:/var/log
+    command: -config.file=/promtail/promtail.yaml
+    networks:
+      - loki
+
+  mysql:
+    image: mysql:5.7
+    container_name: infecshot-mysql
+    ports:
+      - 3306:3306
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+
+volumes:
+  db-data:
+    driver: local

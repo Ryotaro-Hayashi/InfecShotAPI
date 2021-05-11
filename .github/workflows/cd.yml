@@ -1,0 +1,36 @@
+name: cd
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [closed]
+
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure SSH
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          USER_NAME: ${{ secrets.USER_NAME }}
+          HOST_NAME: ${{ secrets.HOST_NAME }}
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$PRIVATE_KEY" > ~/.ssh/prod.key
+          chmod 600 ~/.ssh/prod.key
+          cat >>~/.ssh/config <<END
+          Host prod
+            HostName $HOST_NAME
+            User $USER_NAME
+            IdentityFile ~/.ssh/prod.key
+            StrictHostKeyChecking no
+          END
+
+      - name: Git pull
+        env:
+          GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
+          GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
+        run: ssh prod 'cd ~/InfecShotAPI/ && git remote set-url origin https://'${GIT_USERNAME}':'${GIT_PASSWORD}'@github.com/Ryotaro-Hayashi/InfecShotAPI.git && git pull origin master'
