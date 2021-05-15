@@ -1,3 +1,4 @@
-# 2103_proto_f_server
+# infecshot API
 
-林遼太朗：バックエンド頑張ります！！！
+### テストの実行
+`docker-compose -f docker-compose.yml -f docker-compose.local.yml run --rm api go test ./...`

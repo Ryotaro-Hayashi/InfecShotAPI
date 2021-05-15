@@ -1,3 +1,5 @@
+//go:generate mockgen -source=$GOFILE -package=mock_$GOPACKAGE -destination=./mock_$GOPACKAGE/mock_$GOFILE
+
 package response
 
 import (
@@ -11,16 +13,18 @@ import (
 // HttpResponse レスポンス出力のための構造体
 type HttpResponse struct{}
 
+// NewHttpResponse レスポンス出力のための構造体の初期化をする
+func NewHttpResponse() *HttpResponse {
+	return &HttpResponse{}
+}
+
 // HttpResponseInterface レスポンス出力のためのインターフェース
 type HttpResponseInterface interface {
 	Success(writer http.ResponseWriter, request *http.Request, response interface{})
 	Failed(writer http.ResponseWriter, request *http.Request, err error)
 }
 
-// NewHttpResponse レスポンス出力のための構造体の初期化をする
-func NewHttpResponse() *HttpResponse {
-	return &HttpResponse{}
-}
+var _ HttpResponseInterface = (*HttpResponse)(nil)
 
 // Success HTTPコード:200 正常終了を処理する
 func (hr *HttpResponse) Success(writer http.ResponseWriter, request *http.Request, response interface{}) {

@@ -17,7 +17,7 @@ func TestUserService_CreateUser(t *testing.T) {
 		name    string
 		args    args
 		before  func(mock *mockRepository, mockUUID *mockUUID, args args)
-		want    *createUserResponse
+		want    *CreateUserResponse
 		wantErr bool
 	}{
 		{
@@ -37,7 +37,7 @@ func TestUserService_CreateUser(t *testing.T) {
 				}).Return(nil)
 				mockUUID.UUID.EXPECT().Get().Return("test-uuid", nil).Times(2)
 			},
-			want: &createUserResponse{
+			want: &CreateUserResponse{
 				Token: "test-uuid",
 			},
 			wantErr: false,
@@ -105,7 +105,7 @@ func TestUserService_GetUser(t *testing.T) {
 		name    string
 		args    args
 		before  func(mock *mockRepository, args args)
-		want    *getUserResponse
+		want    *GetUserResponse
 		wantErr bool
 	}{
 		{
@@ -123,7 +123,7 @@ func TestUserService_GetUser(t *testing.T) {
 					HighScore: 100,
 				}, nil)
 			},
-			want: &getUserResponse{
+			want: &GetUserResponse{
 				ID:        "test-user-id",
 				Name:      "test-user-name",
 				HighScore: 100,
