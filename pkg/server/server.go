@@ -7,6 +7,7 @@ import (
 	"InfecShotAPI/pkg/server/handler"
 	"InfecShotAPI/pkg/server/model"
 	"InfecShotAPI/pkg/server/service"
+	"InfecShotAPI/pkg/utils"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,9 +18,11 @@ var (
 
 	accessMiddleware = middleware.NewAccessMiddleware(httpResponse)
 	userRepository   = model.NewUserRepository(db.Conn)
+	UUID             = utils.NewUUID()
 	authMiddleware   = middleware.NewAuthMiddleware(httpResponse, userRepository)
 
-	userService    = service.NewUserService(userRepository)
+	userService = service.NewUserService(userRepository, UUID)
+
 	gameService    = service.NewGameService(userRepository)
 	rankingService = service.NewRankingService(userRepository)
 

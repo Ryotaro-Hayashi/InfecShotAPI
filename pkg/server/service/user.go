@@ -3,9 +3,8 @@ package service
 import (
 	"InfecShotAPI/pkg/derror"
 	"InfecShotAPI/pkg/server/model"
+	"InfecShotAPI/pkg/utils"
 	"errors"
-
-	"github.com/google/uuid"
 )
 
 type CreateUserRequest struct {
@@ -28,11 +27,13 @@ type getUserResponse struct {
 
 type UserService struct {
 	UserRepository model.UserRepositoryInterface
+	UUID           utils.UUIDInterface
 }
 
-func NewUserService(userRepository model.UserRepositoryInterface) *UserService {
+func NewUserService(userRepository model.UserRepositoryInterface, uuid utils.UUIDInterface) *UserService {
 	return &UserService{
 		UserRepository: userRepository,
+		UUID:           uuid,
 	}
 }
 
@@ -46,28 +47,28 @@ var _ UserServiceInterface = (*UserService)(nil)
 // CreateUser ユーザ情報作成のロジック
 func (s *UserService) CreateUser(serviceRequest *CreateUserRequest) (*createUserResponse, error) {
 	// UUIDでユーザIDを生成する
-	userID, err := uuid.NewRandom()
+	userID, err := s.UUID.Get()
 	if err != nil {
 		return nil, derror.InternalServerError.Wrap(err)
 	}
 
 	// UUIDで認証トークンを生成する
-	authToken, err := uuid.NewRandom()
+	authToken, err := s.UUID.Get()
 	if err != nil {
 		return nil, derror.InternalServerError.Wrap(err)
 	}
 
 	// データベースにユーザデータを登録する
 	if err = s.UserRepository.InsertUser(&model.User{
-		ID:        userID.String(),
-		AuthToken: authToken.String(),
+		ID:        userID,
+		AuthToken: authToken,
 		Name:      serviceRequest.Name,
 		HighScore: 0,
 	}); err != nil {
 		return nil, derror.StackError(err)
 	}
 
-	return &createUserResponse{Token: authToken.String()}, nil
+	return &createUserResponse{Token: authToken}, nil
 }
 
 // CreateUser ユーザ情報取得のロジック
