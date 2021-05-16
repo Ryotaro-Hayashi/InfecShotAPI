@@ -69,19 +69,34 @@ func AccessLogging(request *http.Request, err error) {
 	}
 }
 
-func NewAccessLogger(zapCoreLevel zapcore.Level) {
-	config := zap.Config{
-		Encoding:         "json",
-		Level:            zap.NewAtomicLevelAt(zapCoreLevel),
-		OutputPaths:      []string{"pkg/logging/log/access.log"},
-		ErrorOutputPaths: []string{"pkg/logging/log/access.log"},
-		EncoderConfig: zapcore.EncoderConfig{
-			MessageKey:  "message",
-			LevelKey:    "level",
-			EncodeLevel: zapcore.CapitalLevelEncoder,
-			TimeKey:     "time",
-			EncodeTime:  zapcore.ISO8601TimeEncoder,
-		},
+func NewAccessLogger(zapCoreLevel zapcore.Level, env string) {
+	var config zap.Config
+	if env == "production" {
+		config = zap.Config{
+			Encoding:         "json",
+			Level:            zap.NewAtomicLevelAt(zapCoreLevel),
+			OutputPaths:      []string{"pkg/logging/log/access.log"},
+			ErrorOutputPaths: []string{"pkg/logging/log/access.log"},
+			EncoderConfig: zapcore.EncoderConfig{
+				MessageKey:  "message",
+				LevelKey:    "level",
+				EncodeLevel: zapcore.CapitalLevelEncoder,
+				TimeKey:     "time",
+				EncodeTime:  zapcore.ISO8601TimeEncoder,
+			},
+		}
+	} else {
+		config = zap.Config{
+			Encoding: "json",
+			Level:    zap.NewAtomicLevelAt(zapCoreLevel),
+			EncoderConfig: zapcore.EncoderConfig{
+				MessageKey:  "message",
+				LevelKey:    "level",
+				EncodeLevel: zapcore.CapitalLevelEncoder,
+				TimeKey:     "time",
+				EncodeTime:  zapcore.ISO8601TimeEncoder,
+			},
+		}
 	}
 	logger, err := config.Build()
 	if err != nil {
@@ -115,7 +130,7 @@ func ApplicationErrorLogging(request *http.Request, err error) {
 	}
 }
 
-func NewApplicationLogger(zapCoreLevel zapcore.Level) *zap.Logger {
+func NewApplicationLogger(zapCoreLevel zapcore.Level, env string) *zap.Logger {
 	encoderConfig := zapcore.EncoderConfig{
 		LevelKey:     "level",
 		TimeKey:      "time",
@@ -126,20 +141,27 @@ func NewApplicationLogger(zapCoreLevel zapcore.Level) *zap.Logger {
 		EncodeCaller: zapcore.ShortCallerEncoder,
 	}
 
-	file, err := os.OpenFile("pkg/logging/log/application.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	consoleCore := zapcore.NewCore(
 		zapcore.NewConsoleEncoder(encoderConfig),
 		zapcore.AddSync(os.Stdout),
 		zapcore.DebugLevel,
 	)
 
+	var writeSyncer zapcore.WriteSyncer
+	if env == "production" {
+		file, err := os.OpenFile("pkg/logging/log/application.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatal(err)
+		}
+		writeSyncer = zapcore.AddSync(file)
+	} else {
+		file := os.Stdout
+		writeSyncer = zapcore.AddSync(file)
+	}
+
 	logCore := zapcore.NewCore(
 		zapcore.NewJSONEncoder(encoderConfig),
-		zapcore.AddSync(file),
+		writeSyncer,
 		zapCoreLevel,
 	)
 
@@ -157,8 +179,8 @@ func init() {
 	} else {
 		zapCoreLevel = zap.DebugLevel
 	}
-	NewAccessLogger(zapCoreLevel)
-	ApplicationLogger = NewApplicationLogger(zapCoreLevel)
+	NewAccessLogger(zapCoreLevel, env)
+	ApplicationLogger = NewApplicationLogger(zapCoreLevel, env)
 	ApplicationLogger = ApplicationLogger.WithOptions(zap.AddCaller())
 
 	defer accessLogger.Sync()
