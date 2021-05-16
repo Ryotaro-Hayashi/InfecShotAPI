@@ -17,10 +17,9 @@ mysql:
 api:
 	docker exec -it infecshot-api sh
 
-.PHONY: server
 server:
-	go run cmd/main.go
+	docker exec infecshot-api go run cmd/main.go
 
-.PHONY: server&
-server&:
-	go run cmd/main.go &
+stop:
+	docker exec infecshot-api pkill -e go
+	docker exec infecshot-api pkill -e main
