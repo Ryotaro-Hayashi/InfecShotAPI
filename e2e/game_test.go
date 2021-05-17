@@ -1,6 +1,7 @@
-package server
+package e2e
 
 import (
+	"InfecShotAPI/pkg/server"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -10,7 +11,7 @@ import (
 func TestGameFinishIntegration(t *testing.T) {
 	// モックサーバー
 	mux := http.NewServeMux()
-	mux.HandleFunc("/test/game/finish", post(testAuthMiddleware.Authenticate(testGameHandler.HandleGameFinish)))
+	mux.HandleFunc("/test/game/finish", server.Post(testAuthMiddleware.Authenticate(testGameHandler.HandleGameFinish)))
 	server := httptest.NewServer(mux)
 	defer server.Close()
 

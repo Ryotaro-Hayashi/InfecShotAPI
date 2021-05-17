@@ -1,6 +1,7 @@
-package server
+package e2e
 
 import (
+	"InfecShotAPI/pkg/server"
 	"InfecShotAPI/pkg/server/handler"
 	"InfecShotAPI/pkg/server/service"
 	"io/ioutil"
@@ -17,10 +18,10 @@ func TestUserCreateIntegration(t *testing.T) {
 	// mockの初期化
 	mock := newMockUUID(ctrl)
 	testUserService := service.NewUserService(testUserRepository, mock.UUID)
-	testUserHandler := handler.NewUserHandler(httpResponse, testUserService)
+	testUserHandler := handler.NewUserHandler(testHttpResponse, testUserService)
 
 	mux := http.NewServeMux() // モックサーバー
-	mux.HandleFunc("/test/user/create", post(testUserHandler.HandleUserCreate))
+	mux.HandleFunc("/test/user/create", server.Post(testUserHandler.HandleUserCreate))
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
@@ -149,10 +150,10 @@ func TestUserCreateIntegration(t *testing.T) {
 
 func TestUserGetIntegration(t *testing.T) {
 	testUserService := service.NewUserService(testUserRepository, nil)
-	testUserHandler := handler.NewUserHandler(httpResponse, testUserService)
+	testUserHandler := handler.NewUserHandler(testHttpResponse, testUserService)
 
 	mux := http.NewServeMux() // モックサーバー
-	mux.HandleFunc("/test/user/get", get(testAuthMiddleware.Authenticate(testUserHandler.HandleUserGet)))
+	mux.HandleFunc("/test/user/get", server.Get(testAuthMiddleware.Authenticate(testUserHandler.HandleUserGet)))
 	server := httptest.NewServer(mux)
 	defer server.Close()
 

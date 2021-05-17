@@ -1,6 +1,7 @@
-package server
+package e2e
 
 import (
+	"InfecShotAPI/pkg/server"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -10,7 +11,7 @@ import (
 func TestRankingListIntegration(t *testing.T) {
 	// モックサーバー
 	mux := http.NewServeMux()
-	mux.HandleFunc("/test/ranking/list", get(testRankingHandler.HandleRankingList))
+	mux.HandleFunc("/test/ranking/list", server.Get(testRankingHandler.HandleRankingList))
 	server := httptest.NewServer(mux)
 	defer server.Close()
 
