@@ -25,6 +25,6 @@ jobs:
 
     - name: Integration Test
       run:  |
-        make local
         docker network create loki
+        make local
         docker-compose -f docker-compose.yml -f docker-compose.local.yml run -e MYSQL_DATABASE=proto_api_test api go test ./e2e/...
