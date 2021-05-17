@@ -2,8 +2,9 @@
 
 ### Installation
 1. copy `.env.example` file, and make `.env` file
-2. $`make local`
-3. $`make server`
+2. $`docker network create loki`
+3. $`make local`
+4. $`make server`
 
 ### Stop
 $`make stop`
