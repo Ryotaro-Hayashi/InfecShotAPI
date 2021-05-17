@@ -23,3 +23,6 @@ server:
 stop:
 	docker exec infecshot-api pkill -e go
 	docker exec infecshot-api pkill -e main
+
+test:
+	docker-compose -f docker-compose.yml -f docker-compose.local.yml run -e MYSQL_DATABASE=proto_api_test api go test ./...

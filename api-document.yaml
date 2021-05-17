@@ -80,8 +80,8 @@ paths:
               $ref: '#/components/schemas/GameFinishRequest'
         required: true
       responses:
-        200:
-          description: A successful response.
+        204:
+          description: A successful response and no content.
           content: {}
   /ranking/list:
     get:

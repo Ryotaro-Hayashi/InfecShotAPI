@@ -2,7 +2,10 @@ package server
 
 import (
 	"InfecShotAPI/pkg/db"
+	"InfecShotAPI/pkg/http/middleware"
+	"InfecShotAPI/pkg/server/handler"
 	"InfecShotAPI/pkg/server/model"
+	"InfecShotAPI/pkg/server/service"
 	"InfecShotAPI/pkg/utils/mock_utils"
 	"encoding/json"
 	"reflect"
@@ -12,7 +15,13 @@ import (
 
 var (
 	testUserRepository = model.NewUserRepository(db.Conn)
-	//testAuthMiddleware = middleware.NewAuthMiddleware(httpResponse, testUserRepository)
+	testAuthMiddleware = middleware.NewAuthMiddleware(httpResponse, testUserRepository)
+
+	testRankingService = service.NewRankingService(testUserRepository)
+	testGameService    = service.NewGameService(testUserRepository)
+
+	testRankingHandler = handler.NewRankingHandler(httpResponse, testRankingService)
+	testGameHandler    = handler.NewGameHandler(httpResponse, testGameService)
 )
 
 type mockUUID struct {
