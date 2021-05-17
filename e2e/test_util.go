@@ -1,8 +1,9 @@
-package server
+package e2e
 
 import (
 	"InfecShotAPI/pkg/db"
 	"InfecShotAPI/pkg/http/middleware"
+	"InfecShotAPI/pkg/http/response"
 	"InfecShotAPI/pkg/server/handler"
 	"InfecShotAPI/pkg/server/model"
 	"InfecShotAPI/pkg/server/service"
@@ -14,14 +15,15 @@ import (
 )
 
 var (
+	testHttpResponse   = response.NewHttpResponse()
 	testUserRepository = model.NewUserRepository(db.Conn)
-	testAuthMiddleware = middleware.NewAuthMiddleware(httpResponse, testUserRepository)
+	testAuthMiddleware = middleware.NewAuthMiddleware(testHttpResponse, testUserRepository)
 
 	testRankingService = service.NewRankingService(testUserRepository)
 	testGameService    = service.NewGameService(testUserRepository)
 
-	testRankingHandler = handler.NewRankingHandler(httpResponse, testRankingService)
-	testGameHandler    = handler.NewGameHandler(httpResponse, testGameService)
+	testRankingHandler = handler.NewRankingHandler(testHttpResponse, testRankingService)
+	testGameHandler    = handler.NewGameHandler(testHttpResponse, testGameService)
 )
 
 type mockUUID struct {
