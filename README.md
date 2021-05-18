@@ -1,7 +1,7 @@
 # infecshot API
 
 ### Installation
-1. copy `.env.example` file, and make `.env` file
+1. $`cp .env.example .env`
 2. $`docker network create loki`
 3. $`make local`
 4. $`make server`
