@@ -21,6 +21,7 @@ services:
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    dns: 8.8.8.8
     networks:
       - loki
 
