@@ -21,6 +21,9 @@ services:
       MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
+    dns: 8.8.8.8
+    extra_hosts:
+      - "host.docker.internal:192.168.65.1"
     networks:
       - loki
 
@@ -47,7 +50,7 @@ services:
       - db-data:/var/lib/mysql
     dns: 8.8.8.8
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - "host.docker.internal:192.168.65.1"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
