@@ -47,7 +47,7 @@ func (m *authMiddleware) Authenticate(nextFunc http.HandlerFunc) http.HandlerFun
 			return
 		}
 		if user == nil {
-			m.HttpResponse.Failed(writer, request, derror.InternalServerError.Wrap(errors.New("empty set user")))
+			m.HttpResponse.Failed(writer, request, derror.BadRequestError.Wrap(errors.New("empty set user")))
 			return
 		}
 

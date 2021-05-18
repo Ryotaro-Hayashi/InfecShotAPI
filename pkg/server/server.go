@@ -7,6 +7,7 @@ import (
 	"InfecShotAPI/pkg/server/handler"
 	"InfecShotAPI/pkg/server/model"
 	"InfecShotAPI/pkg/server/service"
+	"InfecShotAPI/pkg/utils"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,9 +18,11 @@ var (
 
 	accessMiddleware = middleware.NewAccessMiddleware(httpResponse)
 	userRepository   = model.NewUserRepository(db.Conn)
+	UUID             = utils.NewUUID()
 	authMiddleware   = middleware.NewAuthMiddleware(httpResponse, userRepository)
 
-	userService    = service.NewUserService(userRepository)
+	userService = service.NewUserService(userRepository, UUID)
+
 	gameService    = service.NewGameService(userRepository)
 	rankingService = service.NewRankingService(userRepository)
 
@@ -30,10 +33,10 @@ var (
 
 // Serve HTTPサーバを起動する
 func Serve(addr string) {
-	http.HandleFunc("/user/create", accessMiddleware.Access(post(userHandler.HandleUserCreate)))
-	http.HandleFunc("/user/get", accessMiddleware.Access(get(authMiddleware.Authenticate(userHandler.HandleUserGet))))
-	http.HandleFunc("/game/finish", accessMiddleware.Access(post(authMiddleware.Authenticate(gameHandler.HandleGameFinish))))
-	http.HandleFunc("/ranking/list", accessMiddleware.Access(get(rankingHandler.HandleRankingList)))
+	http.HandleFunc("/user/create", accessMiddleware.Access(Post(userHandler.HandleUserCreate)))
+	http.HandleFunc("/user/get", accessMiddleware.Access(Get(authMiddleware.Authenticate(userHandler.HandleUserGet))))
+	http.HandleFunc("/game/finish", accessMiddleware.Access(Post(authMiddleware.Authenticate(gameHandler.HandleGameFinish))))
+	http.HandleFunc("/ranking/list", accessMiddleware.Access(Get(rankingHandler.HandleRankingList)))
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Hello World")
@@ -47,13 +50,13 @@ func Serve(addr string) {
 	}
 }
 
-// get GETリクエストを処理する
-func get(apiFunc http.HandlerFunc) http.HandlerFunc {
+// Get GETリクエストを処理する
+func Get(apiFunc http.HandlerFunc) http.HandlerFunc {
 	return httpMethod(apiFunc, http.MethodGet)
 }
 
-// post POSTリクエストを処理する
-func post(apiFunc http.HandlerFunc) http.HandlerFunc {
+// Post POSTリクエストを処理する
+func Post(apiFunc http.HandlerFunc) http.HandlerFunc {
 	return httpMethod(apiFunc, http.MethodPost)
 }
 

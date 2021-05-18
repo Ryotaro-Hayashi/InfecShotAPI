@@ -18,7 +18,14 @@ jobs:
         go-version: 1.15
 
     - name: Build
-      run: go build -v ./...
+      run:  go build -v ./...
 
-    - name: Test
-      run: go test -v ./...
+    - name: Unit Test
+      run:  go test ./pkg/...
+
+#    - name: Integration Test
+#      run:  |
+#        cp .env.example .env
+#        docker network create loki
+#        make local
+#        docker-compose -f docker-compose.yml -f docker-compose.local.yml run -e MYSQL_DATABASE=proto_api_test api go test ./e2e/...
