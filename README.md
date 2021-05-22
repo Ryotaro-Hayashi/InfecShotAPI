@@ -1,6 +1,6 @@
 # infecshot API
 
-### client
+### Client
 https://ryotaro-hayashi.github.io/InfecShot/
 
 ### Structure
