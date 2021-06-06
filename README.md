@@ -4,7 +4,8 @@
 https://ryotaro-hayashi.github.io/InfecShot/
 
 ### Structure
-![infecshot-api-overall](https://user-images.githubusercontent.com/53222150/119227638-de35b300-bb49-11eb-8785-67d446d9f280.png)
+![infecshot-api-overall](https://user-images.githubusercontent.com/53222150/120919636-9c823c00-c6f5-11eb-970b-e29538a826ba.png)
+
 
 ### Installation
 1. $`git clone https://github.com/Ryotaro-Hayashi/InfecShotAPI.git`
