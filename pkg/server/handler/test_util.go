@@ -10,17 +10,17 @@ import (
 var addr = "80"
 
 type mock struct {
-	mockHttpResponse   *mock_response.MockHttpResponseInterface
-	mockUserService    *mock_service.MockUserServiceInterface
-	mockRankingService *mock_service.MockRankingServiceInterface
-	mockGameService    *mock_service.MockGameServiceInterface
+	mockHttpResponse   *mock_response.MockHttpResponse
+	mockUserService    *mock_service.MockUserService
+	mockRankingService *mock_service.MockRankingService
+	mockGameService    *mock_service.MockGameService
 }
 
 func newMock(ctrl *gomock.Controller) *mock {
 	return &mock{
-		mockHttpResponse:   mock_response.NewMockHttpResponseInterface(ctrl),
-		mockUserService:    mock_service.NewMockUserServiceInterface(ctrl),
-		mockRankingService: mock_service.NewMockRankingServiceInterface(ctrl),
-		mockGameService:    mock_service.NewMockGameServiceInterface(ctrl),
+		mockHttpResponse:   mock_response.NewMockHttpResponse(ctrl),
+		mockUserService:    mock_service.NewMockUserService(ctrl),
+		mockRankingService: mock_service.NewMockRankingService(ctrl),
+		mockGameService:    mock_service.NewMockGameService(ctrl),
 	}
 }

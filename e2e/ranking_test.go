@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"InfecShotAPI/pkg/db"
 	"InfecShotAPI/pkg/server"
 	"io/ioutil"
 	"net/http"
@@ -35,7 +36,7 @@ func TestRankingListIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id-1", "test-auth-token-1", "test-user-name-1", 100), ("test-user-id-2", "test-auth-token-2", "test-user-name-2", 1000), ("test-user-id-3", "test-auth-token-3", "test-user-name-3", 10000)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -48,7 +49,7 @@ func TestRankingListIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id in ("test-user-id-1", "test-user-id-2", "test-user-id-3")`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -86,7 +87,7 @@ func TestRankingListIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id-1", "test-auth-token-1", "test-user-name-1", 100), ("test-user-id-2", "test-auth-token-2", "test-user-name-2", 1000), ("test-user-id-3", "test-auth-token-3", "test-user-name-3", 10000)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -99,7 +100,7 @@ func TestRankingListIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id in ("test-user-id-1", "test-user-id-2", "test-user-id-3")`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -149,7 +150,7 @@ func TestRankingListIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id-1", "test-auth-token-1", "test-user-name-1", 100), ("test-user-id-2", "test-auth-token-2", "test-user-name-2", 1000), ("test-user-id-3", "test-auth-token-3", "test-user-name-3", 10000)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 				}
@@ -161,7 +162,7 @@ func TestRankingListIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id in ("test-user-id-1", "test-user-id-2", "test-user-id-3")`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 				}
@@ -180,7 +181,7 @@ func TestRankingListIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id-1", "test-auth-token-1", "test-user-name-1", 100), ("test-user-id-2", "test-auth-token-2", "test-user-name-2", 1000), ("test-user-id-3", "test-auth-token-3", "test-user-name-3", 10000)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 				}
@@ -192,7 +193,7 @@ func TestRankingListIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id in ("test-user-id-1", "test-user-id-2", "test-user-id-3")`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 				}

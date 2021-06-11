@@ -10,31 +10,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockUUIDInterface is a mock of UUIDInterface interface.
-type MockUUIDInterface struct {
+// MockUUID is a mock of UUID interface.
+type MockUUID struct {
 	ctrl     *gomock.Controller
-	recorder *MockUUIDInterfaceMockRecorder
+	recorder *MockUUIDMockRecorder
 }
 
-// MockUUIDInterfaceMockRecorder is the mock recorder for MockUUIDInterface.
-type MockUUIDInterfaceMockRecorder struct {
-	mock *MockUUIDInterface
+// MockUUIDMockRecorder is the mock recorder for MockUUID.
+type MockUUIDMockRecorder struct {
+	mock *MockUUID
 }
 
-// NewMockUUIDInterface creates a new mock instance.
-func NewMockUUIDInterface(ctrl *gomock.Controller) *MockUUIDInterface {
-	mock := &MockUUIDInterface{ctrl: ctrl}
-	mock.recorder = &MockUUIDInterfaceMockRecorder{mock}
+// NewMockUUID creates a new mock instance.
+func NewMockUUID(ctrl *gomock.Controller) *MockUUID {
+	mock := &MockUUID{ctrl: ctrl}
+	mock.recorder = &MockUUIDMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUUIDInterface) EXPECT() *MockUUIDInterfaceMockRecorder {
+func (m *MockUUID) EXPECT() *MockUUIDMockRecorder {
 	return m.recorder
 }
 
 // Get mocks base method.
-func (m *MockUUIDInterface) Get() (string, error) {
+func (m *MockUUID) Get() (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get")
 	ret0, _ := ret[0].(string)
@@ -43,7 +43,7 @@ func (m *MockUUIDInterface) Get() (string, error) {
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockUUIDInterfaceMockRecorder) Get() *gomock.Call {
+func (mr *MockUUIDMockRecorder) Get() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUUIDInterface)(nil).Get))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockUUID)(nil).Get))
 }

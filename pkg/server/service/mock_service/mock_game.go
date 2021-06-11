@@ -11,31 +11,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockGameServiceInterface is a mock of GameServiceInterface interface.
-type MockGameServiceInterface struct {
+// MockGameService is a mock of GameService interface.
+type MockGameService struct {
 	ctrl     *gomock.Controller
-	recorder *MockGameServiceInterfaceMockRecorder
+	recorder *MockGameServiceMockRecorder
 }
 
-// MockGameServiceInterfaceMockRecorder is the mock recorder for MockGameServiceInterface.
-type MockGameServiceInterfaceMockRecorder struct {
-	mock *MockGameServiceInterface
+// MockGameServiceMockRecorder is the mock recorder for MockGameService.
+type MockGameServiceMockRecorder struct {
+	mock *MockGameService
 }
 
-// NewMockGameServiceInterface creates a new mock instance.
-func NewMockGameServiceInterface(ctrl *gomock.Controller) *MockGameServiceInterface {
-	mock := &MockGameServiceInterface{ctrl: ctrl}
-	mock.recorder = &MockGameServiceInterfaceMockRecorder{mock}
+// NewMockGameService creates a new mock instance.
+func NewMockGameService(ctrl *gomock.Controller) *MockGameService {
+	mock := &MockGameService{ctrl: ctrl}
+	mock.recorder = &MockGameServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGameServiceInterface) EXPECT() *MockGameServiceInterfaceMockRecorder {
+func (m *MockGameService) EXPECT() *MockGameServiceMockRecorder {
 	return m.recorder
 }
 
 // FinishGame mocks base method.
-func (m *MockGameServiceInterface) FinishGame(serviceRequest *service.FinishGameRequest) error {
+func (m *MockGameService) FinishGame(serviceRequest *service.FinishGameRequest) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FinishGame", serviceRequest)
 	ret0, _ := ret[0].(error)
@@ -43,7 +43,7 @@ func (m *MockGameServiceInterface) FinishGame(serviceRequest *service.FinishGame
 }
 
 // FinishGame indicates an expected call of FinishGame.
-func (mr *MockGameServiceInterfaceMockRecorder) FinishGame(serviceRequest interface{}) *gomock.Call {
+func (mr *MockGameServiceMockRecorder) FinishGame(serviceRequest interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FinishGame", reflect.TypeOf((*MockGameServiceInterface)(nil).FinishGame), serviceRequest)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FinishGame", reflect.TypeOf((*MockGameService)(nil).FinishGame), serviceRequest)
 }

@@ -27,12 +27,12 @@ var (
 )
 
 type mockUUID struct {
-	UUID *mock_utils.MockUUIDInterface
+	UUID *mock_utils.MockUUID
 }
 
 func newMockUUID(ctrl *gomock.Controller) *mockUUID {
 	return &mockUUID{
-		UUID: mock_utils.NewMockUUIDInterface(ctrl),
+		UUID: mock_utils.NewMockUUID(ctrl),
 	}
 }
 

@@ -11,31 +11,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockRankingServiceInterface is a mock of RankingServiceInterface interface.
-type MockRankingServiceInterface struct {
+// MockRankingService is a mock of RankingService interface.
+type MockRankingService struct {
 	ctrl     *gomock.Controller
-	recorder *MockRankingServiceInterfaceMockRecorder
+	recorder *MockRankingServiceMockRecorder
 }
 
-// MockRankingServiceInterfaceMockRecorder is the mock recorder for MockRankingServiceInterface.
-type MockRankingServiceInterfaceMockRecorder struct {
-	mock *MockRankingServiceInterface
+// MockRankingServiceMockRecorder is the mock recorder for MockRankingService.
+type MockRankingServiceMockRecorder struct {
+	mock *MockRankingService
 }
 
-// NewMockRankingServiceInterface creates a new mock instance.
-func NewMockRankingServiceInterface(ctrl *gomock.Controller) *MockRankingServiceInterface {
-	mock := &MockRankingServiceInterface{ctrl: ctrl}
-	mock.recorder = &MockRankingServiceInterfaceMockRecorder{mock}
+// NewMockRankingService creates a new mock instance.
+func NewMockRankingService(ctrl *gomock.Controller) *MockRankingService {
+	mock := &MockRankingService{ctrl: ctrl}
+	mock.recorder = &MockRankingServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockRankingServiceInterface) EXPECT() *MockRankingServiceInterfaceMockRecorder {
+func (m *MockRankingService) EXPECT() *MockRankingServiceMockRecorder {
 	return m.recorder
 }
 
 // GetRankInfoList mocks base method.
-func (m *MockRankingServiceInterface) GetRankInfoList(serviceRequest *service.GetRankInfoListRequest) (*service.GetRankInfoListResponse, error) {
+func (m *MockRankingService) GetRankInfoList(serviceRequest *service.GetRankInfoListRequest) (*service.GetRankInfoListResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetRankInfoList", serviceRequest)
 	ret0, _ := ret[0].(*service.GetRankInfoListResponse)
@@ -44,7 +44,7 @@ func (m *MockRankingServiceInterface) GetRankInfoList(serviceRequest *service.Ge
 }
 
 // GetRankInfoList indicates an expected call of GetRankInfoList.
-func (mr *MockRankingServiceInterfaceMockRecorder) GetRankInfoList(serviceRequest interface{}) *gomock.Call {
+func (mr *MockRankingServiceMockRecorder) GetRankInfoList(serviceRequest interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRankInfoList", reflect.TypeOf((*MockRankingServiceInterface)(nil).GetRankInfoList), serviceRequest)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRankInfoList", reflect.TypeOf((*MockRankingService)(nil).GetRankInfoList), serviceRequest)
 }

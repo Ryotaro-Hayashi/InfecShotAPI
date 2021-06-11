@@ -11,49 +11,49 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockHttpResponseInterface is a mock of HttpResponseInterface interface.
-type MockHttpResponseInterface struct {
+// MockHttpResponse is a mock of HttpResponse interface.
+type MockHttpResponse struct {
 	ctrl     *gomock.Controller
-	recorder *MockHttpResponseInterfaceMockRecorder
+	recorder *MockHttpResponseMockRecorder
 }
 
-// MockHttpResponseInterfaceMockRecorder is the mock recorder for MockHttpResponseInterface.
-type MockHttpResponseInterfaceMockRecorder struct {
-	mock *MockHttpResponseInterface
+// MockHttpResponseMockRecorder is the mock recorder for MockHttpResponse.
+type MockHttpResponseMockRecorder struct {
+	mock *MockHttpResponse
 }
 
-// NewMockHttpResponseInterface creates a new mock instance.
-func NewMockHttpResponseInterface(ctrl *gomock.Controller) *MockHttpResponseInterface {
-	mock := &MockHttpResponseInterface{ctrl: ctrl}
-	mock.recorder = &MockHttpResponseInterfaceMockRecorder{mock}
+// NewMockHttpResponse creates a new mock instance.
+func NewMockHttpResponse(ctrl *gomock.Controller) *MockHttpResponse {
+	mock := &MockHttpResponse{ctrl: ctrl}
+	mock.recorder = &MockHttpResponseMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockHttpResponseInterface) EXPECT() *MockHttpResponseInterfaceMockRecorder {
+func (m *MockHttpResponse) EXPECT() *MockHttpResponseMockRecorder {
 	return m.recorder
 }
 
 // Failed mocks base method.
-func (m *MockHttpResponseInterface) Failed(writer http.ResponseWriter, request *http.Request, err error) {
+func (m *MockHttpResponse) Failed(writer http.ResponseWriter, request *http.Request, err error) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Failed", writer, request, err)
 }
 
 // Failed indicates an expected call of Failed.
-func (mr *MockHttpResponseInterfaceMockRecorder) Failed(writer, request, err interface{}) *gomock.Call {
+func (mr *MockHttpResponseMockRecorder) Failed(writer, request, err interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Failed", reflect.TypeOf((*MockHttpResponseInterface)(nil).Failed), writer, request, err)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Failed", reflect.TypeOf((*MockHttpResponse)(nil).Failed), writer, request, err)
 }
 
 // Success mocks base method.
-func (m *MockHttpResponseInterface) Success(writer http.ResponseWriter, request *http.Request, response interface{}) {
+func (m *MockHttpResponse) Success(writer http.ResponseWriter, request *http.Request, response interface{}) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Success", writer, request, response)
 }
 
 // Success indicates an expected call of Success.
-func (mr *MockHttpResponseInterfaceMockRecorder) Success(writer, request, response interface{}) *gomock.Call {
+func (mr *MockHttpResponseMockRecorder) Success(writer, request, response interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Success", reflect.TypeOf((*MockHttpResponseInterface)(nil).Success), writer, request, response)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Success", reflect.TypeOf((*MockHttpResponse)(nil).Success), writer, request, response)
 }

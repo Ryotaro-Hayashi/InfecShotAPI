@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"InfecShotAPI/pkg/db"
 	"InfecShotAPI/pkg/server"
 	"InfecShotAPI/pkg/server/handler"
 	"InfecShotAPI/pkg/server/service"
@@ -59,7 +60,7 @@ func TestUserCreateIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-uuid"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -178,7 +179,7 @@ func TestUserGetIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 100)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -199,7 +200,7 @@ func TestUserGetIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -212,7 +213,7 @@ func TestUserGetIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 100)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -232,7 +233,7 @@ func TestUserGetIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -245,7 +246,7 @@ func TestUserGetIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 100)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -265,7 +266,7 @@ func TestUserGetIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return

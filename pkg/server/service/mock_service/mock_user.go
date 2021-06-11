@@ -11,31 +11,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockUserServiceInterface is a mock of UserServiceInterface interface.
-type MockUserServiceInterface struct {
+// MockUserService is a mock of UserService interface.
+type MockUserService struct {
 	ctrl     *gomock.Controller
-	recorder *MockUserServiceInterfaceMockRecorder
+	recorder *MockUserServiceMockRecorder
 }
 
-// MockUserServiceInterfaceMockRecorder is the mock recorder for MockUserServiceInterface.
-type MockUserServiceInterfaceMockRecorder struct {
-	mock *MockUserServiceInterface
+// MockUserServiceMockRecorder is the mock recorder for MockUserService.
+type MockUserServiceMockRecorder struct {
+	mock *MockUserService
 }
 
-// NewMockUserServiceInterface creates a new mock instance.
-func NewMockUserServiceInterface(ctrl *gomock.Controller) *MockUserServiceInterface {
-	mock := &MockUserServiceInterface{ctrl: ctrl}
-	mock.recorder = &MockUserServiceInterfaceMockRecorder{mock}
+// NewMockUserService creates a new mock instance.
+func NewMockUserService(ctrl *gomock.Controller) *MockUserService {
+	mock := &MockUserService{ctrl: ctrl}
+	mock.recorder = &MockUserServiceMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockUserServiceInterface) EXPECT() *MockUserServiceInterfaceMockRecorder {
+func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 	return m.recorder
 }
 
 // CreateUser mocks base method.
-func (m *MockUserServiceInterface) CreateUser(serviceRequest *service.CreateUserRequest) (*service.CreateUserResponse, error) {
+func (m *MockUserService) CreateUser(serviceRequest *service.CreateUserRequest) (*service.CreateUserResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", serviceRequest)
 	ret0, _ := ret[0].(*service.CreateUserResponse)
@@ -44,13 +44,13 @@ func (m *MockUserServiceInterface) CreateUser(serviceRequest *service.CreateUser
 }
 
 // CreateUser indicates an expected call of CreateUser.
-func (mr *MockUserServiceInterfaceMockRecorder) CreateUser(serviceRequest interface{}) *gomock.Call {
+func (mr *MockUserServiceMockRecorder) CreateUser(serviceRequest interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserServiceInterface)(nil).CreateUser), serviceRequest)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserService)(nil).CreateUser), serviceRequest)
 }
 
 // GetUser mocks base method.
-func (m *MockUserServiceInterface) GetUser(serviceRequest *service.GetUserRequest) (*service.GetUserResponse, error) {
+func (m *MockUserService) GetUser(serviceRequest *service.GetUserRequest) (*service.GetUserResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUser", serviceRequest)
 	ret0, _ := ret[0].(*service.GetUserResponse)
@@ -59,7 +59,7 @@ func (m *MockUserServiceInterface) GetUser(serviceRequest *service.GetUserReques
 }
 
 // GetUser indicates an expected call of GetUser.
-func (mr *MockUserServiceInterfaceMockRecorder) GetUser(serviceRequest interface{}) *gomock.Call {
+func (mr *MockUserServiceMockRecorder) GetUser(serviceRequest interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockUserServiceInterface)(nil).GetUser), serviceRequest)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUser", reflect.TypeOf((*MockUserService)(nil).GetUser), serviceRequest)
 }

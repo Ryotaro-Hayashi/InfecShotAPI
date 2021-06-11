@@ -1,6 +1,7 @@
 package e2e
 
 import (
+	"InfecShotAPI/pkg/db"
 	"InfecShotAPI/pkg/server"
 	"net/http"
 	"net/http/httptest"
@@ -12,8 +13,8 @@ func TestGameFinishIntegration(t *testing.T) {
 	// モックサーバー
 	mux := http.NewServeMux()
 	mux.HandleFunc("/test/game/finish", server.Post(testAuthMiddleware.Authenticate(testGameHandler.HandleGameFinish)))
-	server := httptest.NewServer(mux)
-	defer server.Close()
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
 
 	type request struct {
 		method  string
@@ -37,7 +38,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 100)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -52,7 +53,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -68,7 +69,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 100)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -83,7 +84,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -99,7 +100,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 0)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -114,7 +115,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -130,7 +131,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 100)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -145,7 +146,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -185,7 +186,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			before: func() {
 				// シードの作成
 				query := `INSERT INTO user(id, auth_token, name, high_score) VALUES ("test-user-id", "test-auth-token", "test-user-name", 100)`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -200,7 +201,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			after: func(res *http.Response) {
 				// シードの削除
 				query := `DELETE FROM user WHERE id = "test-user-id"`
-				_, err := testUserRepository.Conn.Exec(query)
+				_, err := db.Conn.Exec(query)
 				if err != nil {
 					t.Errorf("db.TestConn.Exec() failed %s", err)
 					return
@@ -221,7 +222,7 @@ func TestGameFinishIntegration(t *testing.T) {
 			tt.before() // シード作成
 
 			// リクエスト
-			req, err := http.NewRequest(tt.request.method, server.URL+tt.request.pattern, tt.request.body)
+			req, err := http.NewRequest(tt.request.method, srv.URL+tt.request.pattern, tt.request.body)
 			if err != nil {
 				t.Errorf("http.NewRequest faild: %v", err)
 				return
