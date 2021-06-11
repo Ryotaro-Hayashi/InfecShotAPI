@@ -14,11 +14,11 @@ import (
 )
 
 type authMiddleware struct {
-	HttpResponse   response.HttpResponseInterface
-	UserRepository model.UserRepositoryInterface
+	HttpResponse   response.HttpResponse
+	UserRepository model.UserRepository
 }
 
-func NewAuthMiddleware(httpResponse response.HttpResponseInterface, userRepository model.UserRepositoryInterface) *authMiddleware {
+func NewAuthMiddleware(httpResponse response.HttpResponse, userRepository model.UserRepository) *authMiddleware {
 	return &authMiddleware{
 		HttpResponse:   httpResponse,
 		UserRepository: userRepository,

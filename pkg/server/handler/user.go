@@ -14,11 +14,11 @@ import (
 )
 
 type UserHandler struct {
-	HttpResponse response.HttpResponseInterface
-	UserService  service.UserServiceInterface
+	HttpResponse response.HttpResponse
+	UserService  service.UserService
 }
 
-func NewUserHandler(httpResponse response.HttpResponseInterface, userService service.UserServiceInterface) *UserHandler {
+func NewUserHandler(httpResponse response.HttpResponse, userService service.UserService) *UserHandler {
 	return &UserHandler{
 		HttpResponse: httpResponse,
 		UserService:  userService,

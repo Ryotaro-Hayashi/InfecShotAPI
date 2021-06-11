@@ -10,24 +10,24 @@ import (
 	"net/http"
 )
 
-// HttpResponse レスポンス出力のための構造体
-type HttpResponse struct{}
+// httpResponse レスポンス出力のための構造体
+type httpResponse struct{}
 
 // NewHttpResponse レスポンス出力のための構造体の初期化をする
-func NewHttpResponse() *HttpResponse {
-	return &HttpResponse{}
+func NewHttpResponse() HttpResponse {
+	return &httpResponse{}
 }
 
-// HttpResponseInterface レスポンス出力のためのインターフェース
-type HttpResponseInterface interface {
+// HttpResponse レスポンス出力のためのインターフェース
+type HttpResponse interface {
 	Success(writer http.ResponseWriter, request *http.Request, response interface{})
 	Failed(writer http.ResponseWriter, request *http.Request, err error)
 }
 
-var _ HttpResponseInterface = (*HttpResponse)(nil)
+var _ HttpResponse = (*httpResponse)(nil)
 
 // Success HTTPコード:200 正常終了を処理する
-func (hr *HttpResponse) Success(writer http.ResponseWriter, request *http.Request, response interface{}) {
+func (hr *httpResponse) Success(writer http.ResponseWriter, request *http.Request, response interface{}) {
 	if response == nil {
 		writer.WriteHeader(http.StatusNoContent)
 		logging.AccessLogging(request, nil)
@@ -44,7 +44,7 @@ func (hr *HttpResponse) Success(writer http.ResponseWriter, request *http.Reques
 }
 
 // Failed リクエスト失敗時のエラー処理
-func (hr *HttpResponse) Failed(writer http.ResponseWriter, request *http.Request, err error) {
+func (hr *httpResponse) Failed(writer http.ResponseWriter, request *http.Request, err error) {
 	var appErr derror.ApplicationError
 	if errors.As(err, &appErr) {
 		HttpError(writer, appErr.Code, appErr.Msg)
@@ -55,7 +55,7 @@ func (hr *HttpResponse) Failed(writer http.ResponseWriter, request *http.Request
 	logging.AccessLogging(request, err)
 }
 
-// httpError エラー用のレスポンス出力を行う
+// HttpError エラー用のレスポンス出力を行う
 func HttpError(writer http.ResponseWriter, code int, message string) {
 	data, _ := json.Marshal(errorResponse{
 		Code:    code,

@@ -18,11 +18,11 @@ type gameFinishRequest struct {
 }
 
 type GameHandler struct {
-	HttpResponse response.HttpResponseInterface
-	GameService  service.GameServiceInterface
+	HttpResponse response.HttpResponse
+	GameService  service.GameService
 }
 
-func NewGameHandler(httpResponse response.HttpResponseInterface, gameService service.GameServiceInterface) *GameHandler {
+func NewGameHandler(httpResponse response.HttpResponse, gameService service.GameService) *GameHandler {
 	return &GameHandler{
 		HttpResponse: httpResponse,
 		GameService:  gameService,

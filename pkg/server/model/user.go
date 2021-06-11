@@ -15,17 +15,17 @@ type User struct {
 	HighScore int
 }
 
-type UserRepository struct {
+type userRepository struct {
 	Conn *sql.DB
 }
 
-func NewUserRepository(conn *sql.DB) *UserRepository {
-	return &UserRepository{
+func NewUserRepository(conn *sql.DB) UserRepository {
+	return &userRepository{
 		Conn: conn,
 	}
 }
 
-type UserRepositoryInterface interface {
+type UserRepository interface {
 	InsertUser(record *User) error
 	SelectUserByAuthToken(authToken string) (*User, error)
 	UpdateUserByPrimaryKey(record *User) error
@@ -34,10 +34,10 @@ type UserRepositoryInterface interface {
 }
 
 // インターフェースを満たしているかを確認
-var _ UserRepositoryInterface = (*UserRepository)(nil)
+var _ UserRepository = (*userRepository)(nil)
 
 // InsertUser データベースをレコードを登録する
-func (r *UserRepository) InsertUser(record *User) error {
+func (r *userRepository) InsertUser(record *User) error {
 	stmt, err := r.Conn.Prepare("INSERT INTO user(id, auth_token, name, high_score) VALUES(?, ?, ?, ?)")
 	if err != nil {
 		return derror.InternalServerError.Wrap(err)
@@ -50,7 +50,7 @@ func (r *UserRepository) InsertUser(record *User) error {
 }
 
 // UpdateUserByPrimaryKey 主キーを条件にレコードを更新する
-func (r *UserRepository) UpdateUserByPrimaryKey(record *User) error {
+func (r *userRepository) UpdateUserByPrimaryKey(record *User) error {
 	stmt, err := r.Conn.Prepare("UPDATE user SET name = ?, high_score = ? where id = ?")
 	if err != nil {
 		return derror.InternalServerError.Wrap(err)
@@ -63,19 +63,19 @@ func (r *UserRepository) UpdateUserByPrimaryKey(record *User) error {
 }
 
 // SelectUserByAuthToken auth_tokenを条件にレコードを取得する
-func (r *UserRepository) SelectUserByAuthToken(authToken string) (*User, error) {
+func (r *userRepository) SelectUserByAuthToken(authToken string) (*User, error) {
 	row := r.Conn.QueryRow("SELECT * from user WHERE auth_token = ?", authToken)
 	return convertToUser(row)
 }
 
 // SelectUserByPrimaryKey 主キーを条件にレコードを取得する
-func (r *UserRepository) SelectUserByPrimaryKey(userID string) (*User, error) {
+func (r *userRepository) SelectUserByPrimaryKey(userID string) (*User, error) {
 	row := r.Conn.QueryRow("SELECT * from user WHERE id = ?", userID)
 	return convertToUser(row)
 }
 
-// SelectUsersOrderByHighScoreDesc ハイスコア順に指定順位から指定件数を取得する
-func (r *UserRepository) SelectUsersOrderByHighScoreAsc(limit int, offset int) ([]*User, error) {
+// SelectUsersOrderByHighScoreAsc ハイスコア順に指定順位から指定件数を取得する
+func (r *userRepository) SelectUsersOrderByHighScoreAsc(limit int, offset int) ([]*User, error) {
 	stmt, err := r.Conn.Prepare("SELECT * FROM user WHERE high_score > 0 ORDER BY high_score Asc LIMIT ? OFFSET ?")
 	if err != nil {
 		return nil, derror.InternalServerError.Wrap(err)

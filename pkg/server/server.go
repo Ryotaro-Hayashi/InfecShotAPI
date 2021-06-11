@@ -18,10 +18,10 @@ var (
 
 	accessMiddleware = middleware.NewAccessMiddleware(httpResponse)
 	userRepository   = model.NewUserRepository(db.Conn)
-	UUID             = utils.NewUUID()
+	uuID             = utils.NewUUID()
 	authMiddleware   = middleware.NewAuthMiddleware(httpResponse, userRepository)
 
-	userService = service.NewUserService(userRepository, UUID)
+	userService = service.NewUserService(userRepository, uuID)
 
 	gameService    = service.NewGameService(userRepository)
 	rankingService = service.NewRankingService(userRepository)

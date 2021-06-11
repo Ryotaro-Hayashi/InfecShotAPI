@@ -4,20 +4,20 @@ package utils
 
 import "github.com/google/uuid"
 
-type UUID struct{}
+type uuID struct{}
 
-func NewUUID() *UUID {
-	return &UUID{}
+func NewUUID() UUID {
+	return &uuID{}
 }
 
-type UUIDInterface interface {
+type UUID interface {
 	Get() (string, error)
 }
 
 // インターフェースを満たしているかを確認
-var _ UUIDInterface = (*UUID)(nil)
+var _ UUID = (*uuID)(nil)
 
-func (*UUID) Get() (string, error) {
+func (*uuID) Get() (string, error) {
 	u, err := uuid.NewRandom()
 	if err != nil {
 		return "", err

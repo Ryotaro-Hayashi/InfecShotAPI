@@ -13,24 +13,24 @@ type FinishGameRequest struct {
 	Score  int
 }
 
-type GameService struct {
-	UserRepository model.UserRepositoryInterface
+type gameService struct {
+	UserRepository model.UserRepository
 }
 
-func NewGameService(userRepository model.UserRepositoryInterface) *GameService {
-	return &GameService{
+func NewGameService(userRepository model.UserRepository) GameService {
+	return &gameService{
 		UserRepository: userRepository,
 	}
 }
 
-type GameServiceInterface interface {
+type GameService interface {
 	FinishGame(serviceRequest *FinishGameRequest) error
 }
 
-var _ GameServiceInterface = (*GameService)(nil)
+var _ GameService = (*gameService)(nil)
 
-// GameFinish ゲーム終了時のロジック
-func (s *GameService) FinishGame(serviceRequest *FinishGameRequest) error {
+// FinishGame ゲーム終了時のロジック
+func (s *gameService) FinishGame(serviceRequest *FinishGameRequest) error {
 	// ゲーム終了前のユーザ情報の取得
 	user, err := s.UserRepository.SelectUserByPrimaryKey(serviceRequest.UserId)
 	if err != nil {

@@ -12,10 +12,10 @@ import (
 )
 
 type accessMiddleware struct {
-	HttpResponse response.HttpResponseInterface
+	HttpResponse response.HttpResponse
 }
 
-func NewAccessMiddleware(httpResponse response.HttpResponseInterface) *accessMiddleware {
+func NewAccessMiddleware(httpResponse response.HttpResponse) *accessMiddleware {
 	return &accessMiddleware{
 		HttpResponse: httpResponse,
 	}

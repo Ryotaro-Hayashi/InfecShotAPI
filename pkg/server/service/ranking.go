@@ -24,24 +24,24 @@ type RankInfo struct {
 	Score    int
 }
 
-type RankingService struct {
-	UserRepository model.UserRepositoryInterface
+type rankingService struct {
+	UserRepository model.UserRepository
 }
 
-func NewRankingService(userRepository model.UserRepositoryInterface) *RankingService {
-	return &RankingService{
+func NewRankingService(userRepository model.UserRepository) RankingService {
+	return &rankingService{
 		UserRepository: userRepository,
 	}
 }
 
-type RankingServiceInterface interface {
+type RankingService interface {
 	GetRankInfoList(serviceRequest *GetRankInfoListRequest) (*GetRankInfoListResponse, error)
 }
 
-var _ RankingServiceInterface = (*RankingService)(nil)
+var _ RankingService = (*rankingService)(nil)
 
 // GetRankInfoList ランキング情報取得時のロジック
-func (s *RankingService) GetRankInfoList(serviceRequest *GetRankInfoListRequest) (*GetRankInfoListResponse, error) {
+func (s *rankingService) GetRankInfoList(serviceRequest *GetRankInfoListRequest) (*GetRankInfoListResponse, error) {
 	// ハイスコア順に指定順位から指定件数を取得
 	usersOrderByHighScoreDesc, err := s.UserRepository.SelectUsersOrderByHighScoreAsc(serviceRequest.Limit, serviceRequest.Offset)
 	if err != nil {

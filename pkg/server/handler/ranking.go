@@ -27,11 +27,11 @@ type rank struct {
 }
 
 type RankingHandler struct {
-	HttpResponse   response.HttpResponseInterface
-	RankingService service.RankingServiceInterface
+	HttpResponse   response.HttpResponse
+	RankingService service.RankingService
 }
 
-func NewRankingHandler(httpResponse response.HttpResponseInterface, rankingService service.RankingServiceInterface) *RankingHandler {
+func NewRankingHandler(httpResponse response.HttpResponse, rankingService service.RankingService) *RankingHandler {
 	return &RankingHandler{
 		HttpResponse:   httpResponse,
 		RankingService: rankingService,

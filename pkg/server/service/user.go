@@ -27,27 +27,27 @@ type GetUserResponse struct {
 	HighScore int
 }
 
-type UserService struct {
-	UserRepository model.UserRepositoryInterface
-	UUID           utils.UUIDInterface
+type userService struct {
+	UserRepository model.UserRepository
+	UUID           utils.UUID
 }
 
-func NewUserService(userRepository model.UserRepositoryInterface, uuid utils.UUIDInterface) *UserService {
-	return &UserService{
+func NewUserService(userRepository model.UserRepository, uuid utils.UUID) UserService {
+	return &userService{
 		UserRepository: userRepository,
 		UUID:           uuid,
 	}
 }
 
-type UserServiceInterface interface {
+type UserService interface {
 	CreateUser(serviceRequest *CreateUserRequest) (*CreateUserResponse, error)
 	GetUser(serviceRequest *GetUserRequest) (*GetUserResponse, error)
 }
 
-var _ UserServiceInterface = (*UserService)(nil)
+var _ UserService = (*userService)(nil)
 
 // CreateUser ユーザ情報作成のロジック
-func (s *UserService) CreateUser(serviceRequest *CreateUserRequest) (*CreateUserResponse, error) {
+func (s *userService) CreateUser(serviceRequest *CreateUserRequest) (*CreateUserResponse, error) {
 	// UUIDでユーザIDを生成する
 	userID, err := s.UUID.Get()
 	if err != nil {
@@ -73,8 +73,8 @@ func (s *UserService) CreateUser(serviceRequest *CreateUserRequest) (*CreateUser
 	return &CreateUserResponse{Token: authToken}, nil
 }
 
-// CreateUser ユーザ情報取得のロジック
-func (s *UserService) GetUser(serviceRequest *GetUserRequest) (*GetUserResponse, error) {
+// GetUser ユーザ情報取得のロジック
+func (s *userService) GetUser(serviceRequest *GetUserRequest) (*GetUserResponse, error) {
 	user, err := s.UserRepository.SelectUserByPrimaryKey(serviceRequest.ID)
 	if err != nil {
 		return nil, derror.StackError(err)
