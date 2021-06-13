@@ -1,8 +1,5 @@
 # infecshot API
 
-### Client
-https://ryotaro-hayashi.github.io/InfecShot/
-
 ### Structure
 ![infecshot-api-overall](https://user-images.githubusercontent.com/53222150/120919636-9c823c00-c6f5-11eb-970b-e29538a826ba.png)
 
